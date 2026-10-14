@@ -6,7 +6,7 @@ Gemeinsames Repo für den Team-Sprint an Tag 3 von **„Programmieren mit AI“*
 
 1. Einladung zu diesem Repo annehmen (kommt per E-Mail von GitHub).
 2. In VS Code das Repo klonen, im Terminal `npm install`.
-3. `.env.example` nach `.env.local` kopieren und die Werte von Markus eintragen.
+3. `cp .env.example .env.local` – die Supabase-Werte stehen schon drin. Wer LEI-5 oder LEI-6 bearbeitet, bekommt die geheimen Werte von Markus.
 4. `claude` starten und mit Linear verbinden: `/mcp` → *plugin:linear:linear* → *Authenticate*.
 
 Die ganze Anleitung steht auf der Kurs-Website unter [Tag 3 → Übung 10](https://ndu.datamonkeys.ai/tag-3#uebung-10).
