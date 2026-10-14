@@ -6,11 +6,13 @@ Issues: Linear · Team LEI · Projekt Leihbar
 
 ## Zuordnung alte Nummer → Kennung
 
-| Alt | Linear | Titel |
-|---|---|---|
-| Issue 8 | LEI-5 | Beschreibung vorschlagen lassen (mit Testreihe und Angriff) |
-| – | LEI-6 | Unbeantwortete Anfragen laufen ab |
-| – | LEI-7 | Meine Gegenstände neu gestalten (die schlichte Seite gibt es schon) |
+| Alt | Linear | Titel | Schwierigkeit |
+|---|---|---|---|
+| Issue 8 | LEI-5 | A · Beschreibung vorschlagen lassen (mit Testreihe und Angriff) | ★★★ schwer |
+| – | LEI-6 | B · Unbeantwortete Anfragen laufen ab | ★★☆ mittel |
+| – | LEI-7 | C · Meine Gegenstände neu gestalten (die schlichte Seite gibt es schon) | ★★☆ mittel |
+| – | LEI-8 | D · Suche nach Titel | ★☆☆ leicht |
+| – | LEI-9 | E · Teilen-Link mit Vorschau | ★★☆ mittel |
 
 ## Schon gebaut
 
