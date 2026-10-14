@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
+import { Sparkles } from "lucide-react";
 import { kategorien } from "@/data/gegenstaende";
 import { gegenstandAnbieten, type FormularZustand } from "@/app/anbieten/actions";
 
@@ -45,11 +46,46 @@ function Feld({ name, label, fehler, hinweis, children }: FeldProps) {
 export default function AnbietenFormular() {
   const [zustand, formAction, laeuft] = useActionState(gegenstandAnbieten, start);
   const { fehler, werte } = zustand;
+  // LEI-5: Den Titel braucht der Vorschlag-Button (deaktiviert, solange er leer ist); Kategorie, Ort und
+  // Beschreibung liest bzw. setzt er direkt im Formular.
+  const [titel, setTitel] = useState(werte.titel ?? "");
+  const [vorschlagLaeuft, setVorschlagLaeuft] = useState(false);
+  const [vorschlagMeldung, setVorschlagMeldung] = useState("");
+  const formular = useRef<HTMLFormElement>(null);
+
+  async function beschreibungVorschlagen() {
+    const f = formular.current;
+    if (!f) return;
+    const feld = (name: string) => (f.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null)?.value ?? "";
+    setVorschlagLaeuft(true);
+    setVorschlagMeldung("");
+    try {
+      const antwort = await fetch("/api/beschreibung", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titel, kategorie: feld("kategorie"), ort: feld("ort") }),
+      });
+      const daten = (await antwort.json().catch(() => ({}))) as { vorschlag?: string; fehler?: string };
+      const beschreibung = f.elements.namedItem("beschreibung") as HTMLTextAreaElement | null;
+      if (antwort.ok && daten.vorschlag && beschreibung) {
+        beschreibung.value = daten.vorschlag;
+        beschreibung.focus();
+        setVorschlagMeldung("Vorschlag eingefügt – du kannst ihn noch ändern.");
+      } else {
+        setVorschlagMeldung(daten.fehler ?? "Der Vorschlag hat nicht geklappt. Probier es gleich noch einmal.");
+      }
+    } catch {
+      setVorschlagMeldung("Keine Verbindung. Probier es gleich noch einmal.");
+    } finally {
+      setVorschlagLaeuft(false);
+    }
+  }
 
   return (
     // noValidate: die Prüfung läuft auf dem Server, damit alle Meldungen ganze deutsche Sätze sind.
     // key: nach einem Fehlversuch bleibt das Eingegebene stehen.
     <form
+      ref={formular}
       action={formAction}
       noValidate
       key={JSON.stringify(werte)}
@@ -67,7 +103,8 @@ export default function AnbietenFormular() {
             id={id}
             name="titel"
             type="text"
-            defaultValue={werte.titel}
+            value={titel}
+            onChange={(e) => setTitel(e.target.value)}
             maxLength={200}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
@@ -111,6 +148,20 @@ export default function AnbietenFormular() {
           />
         )}
       </Feld>
+      <div className="-mt-3 flex flex-col items-start gap-2">
+        <button
+          type="button"
+          onClick={beschreibungVorschlagen}
+          disabled={!titel.trim() || vorschlagLaeuft}
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-medium transition hover:border-foreground disabled:opacity-60"
+        >
+          <Sparkles size={18} />
+          {vorschlagLaeuft ? "Vorschlag wird geschrieben …" : "Beschreibung vorschlagen"}
+        </button>
+        <p aria-live="polite" className="text-sm text-muted">
+          {vorschlagMeldung || (titel.trim() ? "" : "Gib zuerst einen Titel ein, dann schlägt dir die KI eine Beschreibung vor.")}
+        </p>
+      </div>
 
       <Feld name="ort" label="Ort" fehler={fehler.ort}>
         {({ id, beschreibtDurch, ungueltig }) => (
