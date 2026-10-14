@@ -2,7 +2,11 @@
 // Eingabe prüfen, Antwort prüfen (2–3 Sätze, keine Telefonnummer, kein Preis, kein Link) und das Rate Limit.
 import { kategorien } from "@/data/gegenstaende";
 
-export type VorschlagEingabe = { titel: string; kategorie: string; ort: string };
+/** Wählbare Tonarten. Der Server nimmt nur diese Werte – freier Text käme sonst beim Modell an. */
+export const toene = ["sachlich", "freundlich", "locker"] as const;
+export type Ton = (typeof toene)[number];
+
+export type VorschlagEingabe = { titel: string; kategorie: string; ort: string; ton: Ton };
 
 /** So viele Vorschläge pro Person und Minute – der nächste Klick bekommt eine Meldung. */
 export const MAX_PRO_MINUTE = 5;
@@ -21,6 +25,7 @@ export function eingabeAus(daten: unknown): VorschlagEingabe | null {
     // Nur bekannte Kategorien – alles andere wäre freier Text, der beim Modell landet.
     kategorie: (kategorien as readonly string[]).includes(kategorie) ? kategorie : "",
     ort: text(d.ort, 100),
+    ton: (toene as readonly string[]).includes(d.ton as string) ? (d.ton as Ton) : "freundlich",
   };
 }
 

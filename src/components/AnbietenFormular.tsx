@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { kategorien } from "@/data/gegenstaende";
+import { toene, type Ton } from "@/lib/beschreibung-vorschlag";
 import { gegenstandAnbieten, type FormularZustand } from "@/app/anbieten/actions";
 
 const start: FormularZustand = { fehler: {}, werte: {} };
@@ -49,6 +50,7 @@ export default function AnbietenFormular() {
   // LEI-5: Den Titel braucht der Vorschlag-Button (deaktiviert, solange er leer ist); Kategorie, Ort und
   // Beschreibung liest bzw. setzt er direkt im Formular.
   const [titel, setTitel] = useState(werte.titel ?? "");
+  const [ton, setTon] = useState<Ton>("freundlich");
   const [vorschlagLaeuft, setVorschlagLaeuft] = useState(false);
   const [vorschlagMeldung, setVorschlagMeldung] = useState("");
   const formular = useRef<HTMLFormElement>(null);
@@ -63,7 +65,7 @@ export default function AnbietenFormular() {
       const antwort = await fetch("/api/beschreibung", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titel, kategorie: feld("kategorie"), ort: feld("ort") }),
+        body: JSON.stringify({ titel, kategorie: feld("kategorie"), ort: feld("ort"), ton }),
       });
       const daten = (await antwort.json().catch(() => ({}))) as { vorschlag?: string; fehler?: string };
       const beschreibung = f.elements.namedItem("beschreibung") as HTMLTextAreaElement | null;
@@ -149,6 +151,26 @@ export default function AnbietenFormular() {
         )}
       </Feld>
       <div className="-mt-3 flex flex-col items-start gap-2">
+        <fieldset className="flex flex-wrap items-center gap-2">
+          <legend className="sr-only">Ton des Vorschlags</legend>
+          <span aria-hidden="true" className="text-sm text-muted">Ton:</span>
+          {toene.map((t) => (
+            <label
+              key={t}
+              className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border border-border bg-card px-3 text-sm capitalize has-[:checked]:border-foreground has-[:checked]:font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-2"
+            >
+              <input
+                type="radio"
+                name="ton"
+                value={t}
+                checked={ton === t}
+                onChange={() => setTon(t)}
+                className="sr-only"
+              />
+              {t}
+            </label>
+          ))}
+        </fieldset>
         <button
           type="button"
           onClick={beschreibungVorschlagen}
