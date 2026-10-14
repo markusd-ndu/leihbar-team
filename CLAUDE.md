@@ -23,6 +23,12 @@ Dieses Projekt gehört einem Team von drei Studierenden der NDU (Master Manageme
 - **Nie `git push --force`, nie `rm -rf`, nie `.env*`-Dateien committen.**
 - Die Akzeptanzkriterien des Issues – aus `docs/BACKLOG.md` oder aus Linear (siehe `docs/LINEAR.md`) – sind die Definition of Done. Wenn ein Issue umgesetzt ist, geh die Kriterien einzeln durch und zeig für jedes einen **Beleg**: was du geprüft hast (Build, Test, Abfrage) und was die Person im Browser sehen soll. Behaupte nichts, was du nicht geprüft hast.
 
+## Team-Datenbank (gilt für dieses Repo)
+
+- Die Supabase-Datenbank dieses Teams ist fertig eingerichtet – alle Tabellen, Regeln und der Status „abgelaufen“ für LEI-6 sind da. Die Migrationen in `supabase/migrations/` sind schon angewendet.
+- **Keine neuen Migrationen, kein Supabase-MCP.** Der Supabase-MCP der Person zeigt auf ihr eigenes Projekt, nicht auf die Team-Datenbank – darüber änderst du nie etwas. Fehlt etwas in der Datenbank, sag es der Person: Sie fragt Markus.
+- Testdaten (z. B. eine alte Anfrage für LEI-6) legst du mit einem kleinen Skript an, das `SUPABASE_SECRET_KEY` aus `.env.local` nutzt – nur nach Okay, und danach räumst du sie wieder weg.
+
 ## Tech-Stack (nicht ohne Rücksprache ändern)
 
 - Next.js (App Router, `src/app`), TypeScript, Tailwind CSS v4
@@ -31,6 +37,7 @@ Dieses Projekt gehört einem Team von drei Studierenden der NDU (Master Manageme
 - Aktuelle Doku: Bei Fragen zu Bibliotheken (Supabase, Tailwind, Lucide …) nutze **Context7** statt deines Trainingswissens – mit Library-ID, wenn du sie kennst (z. B. `/supabase/supabase`), eine Frage pro Abfrage, passend zur Version in `package.json`. Ausnahme Next.js: Die passende Doku liegt in `node_modules/next/dist/docs/` (siehe `AGENTS.md`).
 - Icons: **Lucide** (`lucide-react`, schon installiert), keine Emojis in der Oberfläche. Dekorative Icons brauchen nichts; ein Icon ohne Text daneben (z. B. ein Button nur mit Icon) bekommt ein `aria-label`.
 - Animationen in Komponenten: **Motion** (Paket `motion`, Import aus `motion/react`) ist freigegeben, keine andere Animations-Bibliothek. Nur `transform` und `opacity` bewegen; Rückmeldung eines Buttons oder Zählers auf einen Klick höchstens 0,3 s, Ein- und Ausblenden und Platzwechsel höchstens 0,6 s, nichts in Dauerschleife.
+- Tests: **Vitest**, `npm test`. Testdateien liegen neben dem Code (`src/**/*.test.ts`), Beispiel: `src/lib/format.test.ts`.
 - Deployment: Vercel
 - Beispieldaten liegen in `src/data/gegenstaende.ts` (Bilder in `public/gegenstaende/`), bis die Datenbank angebunden ist.
 
