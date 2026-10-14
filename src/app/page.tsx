@@ -29,7 +29,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <div className="flex flex-wrap gap-3">
           <a
             href="#gegenstaende"
-            className="rounded-xl bg-accent px-5 py-3 font-medium text-white shadow-sm transition hover:opacity-90"
+            className="rounded-xl bg-accent px-5 py-3 font-medium text-on-accent shadow-sm transition hover:opacity-90"
           >
             Gegenstände ansehen
           </a>

@@ -69,7 +69,7 @@ export function AnfrageZeile({
           name="status"
           value="angenommen"
           disabled={laeuft || anfrage.status === "angenommen"}
-          className={`${knopf} bg-accent text-white hover:opacity-90`}
+          className={`${knopf} bg-accent text-on-accent hover:opacity-90`}
         >
           Annehmen
         </button>

@@ -1,5 +1,6 @@
 import { cache } from "react";
 import type { Gegenstand, Kategorie } from "@/data/gegenstaende";
+import type { Nutzer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 // Ein Gegenstand, wie er in der Tabelle `items` steht.
@@ -57,3 +58,32 @@ export const ladeGegenstand = cache(async (id: string): Promise<Gegenstand | nul
   if (error) throw new Error(`Gegenstand konnte nicht geladen werden: ${error.message}`);
   return data ? zuGegenstand(data) : null;
 });
+
+/** Ein eigener Gegenstand mit der Zahl seiner offenen Anfragen – für „Meine Gegenstände“. */
+export type EigenerGegenstand = Gegenstand & { offeneAnfragen: number };
+
+/** Alle Gegenstände dieser Person (auch verliehene), neueste zuerst, mit der Zahl offener Anfragen. */
+export async function ladeMeineGegenstaende(nutzer: Nutzer): Promise<EigenerGegenstand[]> {
+  const supabase = await createClient();
+  const [gegenstaende, anfragen] = await Promise.all([
+    supabase
+      .from("items")
+      .select(spalten)
+      .eq("owner_id", nutzer.id)
+      .order("created_at", { ascending: false })
+      .overrideTypes<Zeile[]>(),
+    // Nur offene Anfragen; fremde Anfragen gibt die Datenbank ohnehin nur der Besitzer*in heraus.
+    supabase
+      .from("requests")
+      .select("item_id, items!inner(owner_id)")
+      .eq("status", "offen")
+      .eq("items.owner_id", nutzer.id)
+      .overrideTypes<{ item_id: string }[]>(),
+  ]);
+  if (gegenstaende.error) throw new Error(`Gegenstände konnten nicht geladen werden: ${gegenstaende.error.message}`);
+  if (anfragen.error) throw new Error(`Anfragen konnten nicht geladen werden: ${anfragen.error.message}`);
+
+  const offen = new Map<string, number>();
+  for (const { item_id } of anfragen.data) offen.set(item_id, (offen.get(item_id) ?? 0) + 1);
+  return gegenstaende.data.map((z) => ({ ...zuGegenstand(z), offeneAnfragen: offen.get(z.id) ?? 0 }));
+}

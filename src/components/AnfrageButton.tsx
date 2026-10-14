@@ -33,7 +33,7 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
             className={`${knopf} ${
               angefragt
                 ? "border border-border bg-card text-foreground hover:bg-background"
-                : "bg-accent text-white hover:opacity-90"
+                : "bg-accent text-on-accent hover:opacity-90"
             } disabled:opacity-60`}
           >
             {angefragt ? (
@@ -48,7 +48,7 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
       ) : (
         <Link
           href={`/anmelden?weiter=/gegenstaende/${encodeURIComponent(gegenstandId)}`}
-          className={`${knopf} bg-accent text-white hover:opacity-90`}
+          className={`${knopf} bg-accent text-on-accent hover:opacity-90`}
         >
           Ausleihen anfragen
         </Link>

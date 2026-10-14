@@ -25,6 +25,9 @@ export default async function Header() {
           </Link>
           {nutzer ? (
             <>
+              <Link href="/meine-gegenstaende" className="flex min-h-11 shrink-0 items-center hover:text-foreground">
+                Meine<span className="hidden sm:inline">&nbsp;Gegenstände</span>
+              </Link>
               {hinweis && (
                 <AnfragenHinweis nutzerId={nutzer.id} gegenstandIds={hinweis.gegenstandIds} anzahl={hinweis.anzahl} />
               )}

@@ -25,7 +25,7 @@ export default function KategorieFilter({ aktiv }: Props) {
                 aria-current={istAktiv ? "true" : undefined}
                 className={`flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition ${
                   istAktiv
-                    ? "border-accent bg-accent text-white"
+                    ? "border-accent bg-accent text-on-accent"
                     : "border-border bg-card text-foreground hover:border-foreground"
                 }`}
               >

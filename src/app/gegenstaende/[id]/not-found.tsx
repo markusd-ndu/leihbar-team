@@ -10,7 +10,7 @@ export default function GegenstandNichtGefunden() {
       </p>
       <Link
         href="/#gegenstaende"
-        className="inline-flex min-h-11 items-center rounded-xl bg-accent px-5 font-medium text-white hover:opacity-90"
+        className="inline-flex min-h-11 items-center rounded-xl bg-accent px-5 font-medium text-on-accent hover:opacity-90"
       >
         Zur Liste
       </Link>

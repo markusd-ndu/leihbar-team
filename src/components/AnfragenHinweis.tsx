@@ -59,7 +59,7 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
       className="flex min-h-11 shrink-0 items-center gap-1 text-foreground hover:opacity-80"
     >
       <Bell size={18} aria-hidden />
-      <span className="min-w-5 rounded-full bg-accent px-1.5 text-center text-xs font-semibold leading-5 text-white">
+      <span className="min-w-5 rounded-full bg-accent px-1.5 text-center text-xs font-semibold leading-5 text-on-accent">
         {zahl}
       </span>
     </Link>

@@ -90,7 +90,7 @@ export default function AnmeldeFormular({ art, weiter }: Props) {
       <button
         type="submit"
         disabled={laeuft}
-        className="min-h-11 rounded-xl bg-accent px-5 font-medium text-white shadow-sm transition hover:opacity-90 disabled:opacity-60"
+        className="min-h-11 rounded-xl bg-accent px-5 font-medium text-on-accent shadow-sm transition hover:opacity-90 disabled:opacity-60"
       >
         {art === "anmelden"
           ? laeuft
