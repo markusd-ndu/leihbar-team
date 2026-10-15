@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { feld, knopf } from "@/components/stile";
 import type { Kategorie } from "@/data/gegenstaende";
 
 type Props = {
@@ -22,13 +23,13 @@ export default function SuchFeld({ suche, kategorie }: Props) {
         defaultValue={suche ?? ""}
         maxLength={100}
         placeholder="Titel suchen, z. B. Zelt"
-        className="min-h-11 min-w-0 flex-1 rounded-xl border border-border bg-card px-4 text-base text-foreground placeholder:text-muted"
+        className={`${feld} min-w-0 flex-1 px-4`}
       />
       <button
         type="submit"
-        className="flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-accent px-4 font-medium text-on-accent transition hover:opacity-90"
+        className={`${knopf("haupt")} shrink-0`}
       >
-        <Search aria-hidden="true" className="size-5" />
+        <Search aria-hidden="true" size={18} />
         Suchen
       </button>
     </form>

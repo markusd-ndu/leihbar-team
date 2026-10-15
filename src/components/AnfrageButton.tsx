@@ -2,9 +2,10 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, CircleAlert, LoaderCircle } from "lucide-react";
 import { anfrageUmschalten, type AnfrageZustand } from "@/app/gegenstaende/[id]/actions";
 import AnfragenZaehler from "@/components/AnfragenZaehler";
+import { fehlerSatz, knopf } from "@/components/stile";
 
 type Props = {
   gegenstandId: string;
@@ -13,7 +14,7 @@ type Props = {
   angemeldet: boolean;
 };
 
-const knopf = "flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-5 font-medium shadow-sm transition sm:w-auto";
+const breit = "w-full sm:w-auto";
 
 export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemeldet }: Props) {
   const [zustand, formAction, laeuft] = useActionState<AnfrageZustand, FormData>(
@@ -28,14 +29,12 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
           <input type="hidden" name="aktion" value={angefragt ? "zurueckziehen" : "anfragen"} />
           <button
             type="submit"
-            disabled={laeuft}
             aria-pressed={angefragt}
-            className={`${knopf} ${
-              angefragt
-                ? "border border-border bg-card text-foreground hover:bg-background"
-                : "bg-accent text-on-accent hover:opacity-90"
-            } disabled:opacity-60`}
+            aria-busy={laeuft}
+            onClick={(e) => laeuft && e.preventDefault()}
+            className={`${knopf(angefragt ? "zweit" : "haupt")} ${breit} ${laeuft && angefragt ? "aria-busy:bg-raised aria-busy:text-ink" : ""}`}
           >
+            {laeuft && <LoaderCircle size={18} aria-hidden className="animate-spin" />}
             {angefragt ? (
               <>
                 Angefragt <Check size={18} aria-hidden />
@@ -48,7 +47,7 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
       ) : (
         <Link
           href={`/anmelden?weiter=/gegenstaende/${encodeURIComponent(gegenstandId)}`}
-          className={`${knopf} bg-accent text-on-accent hover:opacity-90`}
+          className={`${knopf("haupt")} ${breit}`}
         >
           Ausleihen anfragen
         </Link>
@@ -60,7 +59,8 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
       </p>
 
       {zustand.fehler && (
-        <p role="alert" className="text-sm font-medium text-danger">
+        <p role="alert" className={fehlerSatz}>
+          <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
           {zustand.fehler}
         </p>
       )}

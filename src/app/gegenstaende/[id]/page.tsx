@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ImageOff, MapPin, User } from "lucide-react";
+import { ArrowLeft, Clock, ImageOff, MapPin, User } from "lucide-react";
 import AnfrageButton from "@/components/AnfrageButton";
 import ErhalteneAnfragen from "@/components/ErhalteneAnfragen";
 import TeilenButton from "@/components/TeilenButton";
@@ -48,15 +48,15 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
       <Link
         href="/#gegenstaende"
-        className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted hover:text-foreground"
+        className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted hover:text-ink hover:underline hover:underline-offset-4"
       >
-        <ArrowLeft size={18} />
+        <ArrowLeft size={18} aria-hidden />
         Zurück zur Liste
       </Link>
 
       {/* Am Handy stehen Titel, Preis und Button über dem Bild – so ist der Button ohne Scrollen sichtbar. */}
       <article className="flex flex-col">
-        <div className="relative order-2 mb-6 aspect-[4/3] overflow-hidden rounded-2xl bg-accent-soft sm:order-1">
+        <div className="relative order-2 mb-6 aspect-[4/3] overflow-hidden border border-border bg-highlight sm:order-1">
           {gegenstand.bild ? (
             <Image
               src={gegenstand.bild}
@@ -67,8 +67,9 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
               preload
             />
           ) : (
-            <div role="img" aria-label={`Kein Bild für ${gegenstand.titel}`} className="flex h-full items-center justify-center text-muted">
+            <div role="img" aria-label={`Kein Bild für ${gegenstand.titel}`} className="flex h-full flex-col items-center justify-center gap-2 text-sm text-muted">
               <ImageOff size={48} aria-hidden />
+              Kein Bild
             </div>
           )}
         </div>
@@ -78,8 +79,8 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
             <p className="text-sm text-muted">{gegenstand.kategorie}</p>
             <TeilenButton titel={gegenstand.titel} />
           </div>
-          <h1 className="mb-2 text-3xl font-bold leading-tight">{gegenstand.titel}</h1>
-          <p className="mb-4 text-xl font-semibold">{preisText(gegenstand.preisProTag)}</p>
+          <h1 className="mb-2 text-3xl">{gegenstand.titel}</h1>
+          <p className="mb-4 text-xl font-semibold leading-snug">{preisText(gegenstand.preisProTag)}</p>
 
           <AnfrageButton gegenstandId={id} anzahl={anzahl} angefragt={angefragt} angemeldet={nutzer !== null} />
         </div>
@@ -88,24 +89,25 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
           {erhalten && <ErhalteneAnfragen gegenstandId={id} anfragen={erhalten} />}
 
           {!gegenstand.verfuegbar && (
-            <p className="mb-4 rounded-xl border border-border bg-card px-4 py-3 text-sm">
+            <p className="mb-4 flex items-center gap-2 bg-warning-bg px-4 py-3 text-sm font-medium text-warning">
+              <Clock size={18} aria-hidden />
               Dieser Gegenstand ist gerade verliehen.
             </p>
           )}
 
           <p className="mb-6 leading-relaxed">{gegenstand.beschreibung}</p>
 
-          <dl className="space-y-2 rounded-2xl border border-border bg-card p-4">
+          <dl className="space-y-2 border border-border bg-raised p-4">
             <div className="flex items-start gap-2">
               <dt className="flex items-center gap-2 text-muted">
-                <MapPin size={18} />
+                <MapPin size={18} aria-hidden />
                 Ort:
               </dt>
               <dd>{gegenstand.ort}</dd>
             </div>
             <div className="flex items-start gap-2">
               <dt className="flex items-center gap-2 text-muted">
-                <User size={18} />
+                <User size={18} aria-hidden />
                 Verleiht:
               </dt>
               <dd>{gegenstand.besitzer}</dd>

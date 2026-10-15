@@ -1,15 +1,13 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { CircleAlert, LoaderCircle, Sparkles } from "lucide-react";
 import { kategorien } from "@/data/gegenstaende";
 import { toene, type Ton } from "@/lib/beschreibung-vorschlag";
 import { gegenstandAnbieten, type FormularZustand } from "@/app/anbieten/actions";
+import { feld as feldKlasse, fehlerKasten, fehlerSatz, knopf } from "@/components/stile";
 
 const start: FormularZustand = { fehler: {}, werte: {} };
-
-const feldKlasse =
-  "min-h-11 w-full rounded-xl border border-border bg-card px-3 py-2 text-base aria-[invalid=true]:border-danger";
 
 type FeldProps = {
   name: string;
@@ -36,7 +34,8 @@ function Feld({ name, label, fehler, hinweis, children }: FeldProps) {
       )}
       {children({ id, beschreibtDurch, ungueltig: Boolean(fehler) })}
       {fehler && (
-        <p id={`${id}-fehler`} className="text-sm font-medium text-danger">
+        <p id={`${id}-fehler`} className={fehlerSatz}>
+          <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
           {fehler}
         </p>
       )}
@@ -94,7 +93,8 @@ export default function AnbietenFormular() {
       className="flex flex-col gap-5"
     >
       {fehler.allgemein && (
-        <p role="alert" className="rounded-xl border border-danger px-4 py-3 text-sm font-medium text-danger">
+        <p role="alert" className={fehlerKasten}>
+          <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
           {fehler.allgemein}
         </p>
       )}
@@ -108,6 +108,8 @@ export default function AnbietenFormular() {
             value={titel}
             onChange={(e) => setTitel(e.target.value)}
             maxLength={200}
+            readOnly={laeuft}
+            aria-busy={laeuft}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
             className={feldKlasse}
@@ -144,6 +146,8 @@ export default function AnbietenFormular() {
             name="beschreibung"
             rows={4}
             defaultValue={werte.beschreibung}
+            readOnly={laeuft}
+            aria-busy={laeuft}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
             className={feldKlasse}
@@ -157,7 +161,7 @@ export default function AnbietenFormular() {
           {toene.map((t) => (
             <label
               key={t}
-              className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border border-border bg-card px-3 text-sm capitalize has-[:checked]:border-foreground has-[:checked]:font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-2"
+              className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-raised px-4 text-sm font-medium capitalize transition duration-(--duration-fast) ease-standard hover:bg-bg has-[:checked]:border-action has-[:checked]:bg-action has-[:checked]:text-on-action has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus"
             >
               <input
                 type="radio"
@@ -173,11 +177,12 @@ export default function AnbietenFormular() {
         </fieldset>
         <button
           type="button"
-          onClick={beschreibungVorschlagen}
-          disabled={!titel.trim() || vorschlagLaeuft}
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-medium transition hover:border-foreground disabled:opacity-60"
+          onClick={() => !vorschlagLaeuft && beschreibungVorschlagen()}
+          disabled={!titel.trim()}
+          aria-busy={vorschlagLaeuft}
+          className={`${knopf("zweit", { klein: true })} aria-busy:bg-raised aria-busy:text-ink`}
         >
-          <Sparkles size={18} />
+          {vorschlagLaeuft ? <LoaderCircle size={18} aria-hidden className="animate-spin" /> : <Sparkles size={18} aria-hidden />}
           {vorschlagLaeuft ? "Vorschlag wird geschrieben …" : "Beschreibung vorschlagen"}
         </button>
         <p aria-live="polite" className="text-sm text-muted">
@@ -192,6 +197,8 @@ export default function AnbietenFormular() {
             name="ort"
             type="text"
             defaultValue={werte.ort}
+            readOnly={laeuft}
+            aria-busy={laeuft}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
             className={feldKlasse}
@@ -207,6 +214,8 @@ export default function AnbietenFormular() {
             type="text"
             inputMode="decimal"
             defaultValue={werte.preis}
+            readOnly={laeuft}
+            aria-busy={laeuft}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
             className={feldKlasse}
@@ -221,6 +230,8 @@ export default function AnbietenFormular() {
             name="besitzer"
             type="text"
             defaultValue={werte.besitzer}
+            readOnly={laeuft}
+            aria-busy={laeuft}
             aria-invalid={ungueltig}
             aria-describedby={beschreibtDurch}
             className={feldKlasse}
@@ -228,11 +239,14 @@ export default function AnbietenFormular() {
         )}
       </Feld>
 
+      {/* aria-busy statt disabled: der Knopf bleibt schwarz und zeigt den drehenden Kreis; ein zweiter Klick tut nichts. */}
       <button
         type="submit"
-        disabled={laeuft}
-        className="min-h-11 rounded-xl bg-accent px-5 font-medium text-on-accent shadow-sm transition hover:opacity-90 disabled:opacity-60"
+        aria-busy={laeuft}
+        onClick={(e) => laeuft && e.preventDefault()}
+        className={knopf("haupt")}
       >
+        {laeuft && <LoaderCircle size={18} aria-hidden className="animate-spin" />}
         {laeuft ? "Wird gespeichert …" : "Gegenstand anbieten"}
       </button>
     </form>

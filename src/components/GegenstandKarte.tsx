@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ImageOff, MapPin, User } from "lucide-react";
+import { Clock, ImageOff, MapPin, User } from "lucide-react";
 import type { Gegenstand } from "@/data/gegenstaende";
 import { preisText } from "@/lib/format";
 
@@ -13,52 +13,46 @@ type Props = {
   ueberschrift?: "h2" | "h3";
   /** Zusätzliche Zeile unten in der Karte, z. B. der Status einer Anfrage. */
   zusatz?: ReactNode;
-  /** „brett“: Look des Design-Systems (eckig, harter Schatten). Ohne Angabe bleibt die Karte wie auf der Startseite. */
-  stil?: "standard" | "brett";
 };
 
-const stile = {
-  standard: {
-    karte:
-      "rounded-2xl border-border bg-card shadow-sm transition hover:shadow-md has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-accent",
-    bild: "bg-accent-soft",
-    text: "text-muted",
-  },
-  brett:
-    // Gedrückt: die Karte rutscht 4 px in ihren Schatten. Fokus: 3 px Rahmen mit 3 px Abstand.
-    {
-      karte:
-        "rounded-none border-lb-border bg-lb-raised shadow-lb-1 transition duration-120 hover:shadow-lb-2 active:translate-x-1 active:translate-y-1 active:shadow-none has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-lb-border",
-      bild: "bg-lb-highlight",
-      text: "text-lb-muted",
-    },
-} as const;
-
-export default function GegenstandKarte({ gegenstand, vorladen = false, ueberschrift: Titel = "h3", zusatz, stil = "standard" }: Props) {
-  const f = stile[stil];
+export default function GegenstandKarte({ gegenstand, vorladen = false, ueberschrift: Titel = "h3", zusatz }: Props) {
+  const verliehen = !gegenstand.verfuegbar;
   return (
     // relative + after:inset-0 am Link: die ganze Karte ist anklickbar, vorgelesen wird nur der Titel.
-    <article className={`relative flex h-full flex-col overflow-hidden border ${f.karte}`}>
-      <div className={`relative aspect-[4/3] ${f.bild}`}>
+    // Ruhig: 4 px gelber Schatten. Darüber: 8 px. Gedrückt: die Karte rutscht in ihren Schatten. Verliehen: flach.
+    <article
+      className={`relative flex h-full flex-col overflow-hidden border border-border bg-raised transition duration-(--duration-fast) ease-standard has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-3 has-[a:focus-visible]:outline-focus ${
+        verliehen
+          ? "shadow-none"
+          : "shadow-1 hover:shadow-2 has-[a:active]:translate-x-1 has-[a:active]:translate-y-1 has-[a:active]:shadow-none"
+      }`}
+    >
+      <div className="relative aspect-[4/3] bg-highlight">
         {gegenstand.bild ? (
           <Image
             src={gegenstand.bild}
             alt=""
             fill
             sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
+            className={`object-cover ${verliehen ? "opacity-70 grayscale" : ""}`}
             preload={vorladen}
           />
         ) : (
-          <div className={`flex h-full flex-col items-center justify-center gap-1 ${f.text}`}>
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-sm text-muted">
             <ImageOff size={40} aria-hidden />
-            {stil === "brett" && <span className="text-sm">Kein Bild</span>}
+            Kein Bild
           </div>
+        )}
+        {verliehen && (
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-warning-bg px-3 py-1 text-sm font-medium text-warning">
+            <Clock size={16} aria-hidden />
+            Gerade verliehen
+          </span>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <p className={`text-sm ${f.text}`}>{gegenstand.kategorie}</p>
-        <Titel className="font-semibold leading-snug">
+        <p className="text-sm text-muted">{gegenstand.kategorie}</p>
+        <Titel className="text-base font-semibold leading-snug">
           <Link
             href={`/gegenstaende/${gegenstand.id}`}
             className="outline-none after:absolute after:inset-0 after:content-['']"
@@ -67,17 +61,17 @@ export default function GegenstandKarte({ gegenstand, vorladen = false, uebersch
           </Link>
         </Titel>
         <p className="font-medium">{preisText(gegenstand.preisProTag)}</p>
-        <dl className={`mt-auto space-y-1 pt-2 text-sm ${f.text}`}>
+        <dl className="mt-auto space-y-1 pt-2 text-sm text-muted">
           <div className="flex items-start gap-2">
             <dt>
-              <MapPin size={16} className="mt-0.5 shrink-0" />
+              <MapPin size={16} className="mt-1 shrink-0" />
               <span className="sr-only">Ort:</span>
             </dt>
             <dd>{gegenstand.ort}</dd>
           </div>
           <div className="flex items-start gap-2">
             <dt>
-              <User size={16} className="mt-0.5 shrink-0" />
+              <User size={16} className="mt-1 shrink-0" />
               <span className="sr-only">Verleiht:</span>
             </dt>
             <dd>{gegenstand.besitzer}</dd>

@@ -39,5 +39,5 @@ export default function AnfragenZaehler({ gegenstandId, anzahl }: Props) {
     return beobachteAnfragen(gegenstandId, neuLaden);
   }, [gegenstandId]);
 
-  return <span className="font-semibold text-foreground">{zahl}</span>;
+  return <span className="font-semibold text-ink">{zahl}</span>;
 }

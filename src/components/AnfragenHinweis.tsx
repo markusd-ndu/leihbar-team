@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import { motion } from "motion/react";
 import { beobachteAnfragen } from "@/lib/anfragen-live";
+import { dauer, kurve } from "@/lib/bewegung";
 import { zaehleOffeneAnfragen } from "@/lib/offene-anfragen";
 import { createClient } from "@/lib/supabase/client";
 
@@ -18,6 +20,13 @@ type Props = {
 /** Glocke mit der Zahl offener Anfragen auf die eigenen Gegenstände; bei 0 unsichtbar. */
 export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Props) {
   const [zahl, setZahl] = useState(anzahl);
+  // Zählt hoch, wenn sich die Zahl nach dem Laden ändert: Dann springt sie einmal kurz (nicht beim ersten Anzeigen).
+  const [sprung, setSprung] = useState(0);
+  const [gesehen, setGesehen] = useState(anzahl);
+  if (zahl !== gesehen) {
+    setGesehen(zahl);
+    setSprung((s) => s + 1);
+  }
   // Kommt vom Server ein neuer Stand (z. B. nach dem eigenen Annehmen), gilt der.
   const [vomServer, setVomServer] = useState(anzahl);
   if (anzahl !== vomServer) {
@@ -38,7 +47,9 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
       const nummer = ++abfrage.current;
       try {
         const neu = await zaehleOffeneAnfragen(supabase, nutzerId);
-        if (nummer === abfrage.current) setZahl(neu);
+        if (nummer === abfrage.current) {
+          setZahl(neu);
+        }
       } catch {
         // Kein Netz o. Ä.: Die alte Zahl bleibt stehen, beim nächsten Signal wird neu gezählt.
       }
@@ -56,12 +67,18 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
       href="/anfragen-an-mich"
       aria-label={text}
       title={text}
-      className="flex min-h-11 shrink-0 items-center gap-1 text-foreground hover:opacity-80"
+      className="flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-1 text-ink transition-colors duration-(--duration-fast) ease-standard hover:text-muted"
     >
       <Bell size={18} aria-hidden />
-      <span className="min-w-5 rounded-full bg-accent px-1.5 text-center text-xs font-semibold leading-5 text-on-accent">
+      <motion.span
+        key={sprung}
+        initial={sprung ? { scale: 0.7 } : false}
+        animate={{ scale: 1 }}
+        transition={{ duration: dauer.base, ease: kurve.standard }}
+        className="min-w-6 rounded-full bg-action px-1 text-center text-xs font-semibold leading-6 text-on-action"
+      >
         {zahl}
-      </span>
+      </motion.span>
     </Link>
   );
 }
