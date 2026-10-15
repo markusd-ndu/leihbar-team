@@ -22,14 +22,14 @@ export default async function Header() {
             className="sm:hidden dark:hidden"
           />
           <Image
-            src="/marke/leihbar-bildmarke-nacht.svg"
+            src="/marke/leihbar-bildmarke-weiss.svg"
             alt="Leihbar"
             width={32}
             height={32}
             unoptimized
             className="hidden dark:block dark:sm:hidden"
           />
-          {/* Das Logo in Tinte für helles Papier, die helle Fassung für den dunklen Modus. */}
+          {/* Das Logo in Tinte für helles Papier, die weiße Fassung für den dunklen Modus. */}
           <Image
             src="/marke/leihbar-logo.png"
             alt="Leihbar"
@@ -40,7 +40,7 @@ export default async function Header() {
             className="hidden h-6 w-auto sm:block dark:sm:hidden"
           />
           <Image
-            src="/marke/leihbar-logo-nacht.png"
+            src="/marke/leihbar-logo-weiss.png"
             alt="Leihbar"
             width={174}
             height={24}
