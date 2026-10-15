@@ -42,6 +42,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           >
             Gegenstand anbieten
           </Link>
+          <Link
+            href="/meine-anfragen"
+            className="rounded-xl border border-border px-5 py-3 font-medium transition hover:border-foreground"
+          >
+            Meine Anfragen
+          </Link>
         </div>
       </section>
 
