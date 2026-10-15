@@ -10,6 +10,21 @@
   --card: #ffffff;
   --border: #e6e4de;
   --danger: #b42318;
+  /* Design-System „Leihbar Team“ (Papier): bisher nur auf „Meine Gegenstände“ in Benutzung. */
+  --lb-bg: #f3efe4;
+  --lb-raised: #fffdf7;
+  --lb-highlight: #fff1b8;
+  --lb-text: #111111;
+  --lb-muted: #5f5b55;
+  --lb-border: #111111;
+  --lb-action: #111111;
+  --lb-action-hover: #33312d;
+  --lb-action-pressed: #000000;
+  --lb-on-action: #ffffff;
+  --lb-signal: #ffd400;
+  --lb-on-signal: #111111;
+  --lb-shadow-1: 4px 4px 0 #ffd400;
+  --lb-shadow-2: 8px 8px 0 #111111;
 }
 
 @theme inline {
@@ -22,6 +37,20 @@
   --color-card: var(--card);
   --color-border: var(--border);
   --color-danger: var(--danger);
+  --color-lb-bg: var(--lb-bg);
+  --color-lb-raised: var(--lb-raised);
+  --color-lb-highlight: var(--lb-highlight);
+  --color-lb-text: var(--lb-text);
+  --color-lb-muted: var(--lb-muted);
+  --color-lb-border: var(--lb-border);
+  --color-lb-action: var(--lb-action);
+  --color-lb-action-hover: var(--lb-action-hover);
+  --color-lb-action-pressed: var(--lb-action-pressed);
+  --color-lb-on-action: var(--lb-on-action);
+  --color-lb-signal: var(--lb-signal);
+  --color-lb-on-signal: var(--lb-on-signal);
+  --shadow-lb-1: var(--lb-shadow-1);
+  --shadow-lb-2: var(--lb-shadow-2);
   /* Ecken: rounded-xl für Knöpfe und Felder, rounded-2xl für Karten und Flächen. */
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
