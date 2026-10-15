@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { anfrageStatus, type AnfrageStatus } from "@/lib/anfrage-status";
+import { antwortStatus } from "@/lib/anfrage-status";
 import { ladeNutzer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -54,7 +54,7 @@ export async function statusSetzen(
   if (!nutzer) redirect(`/anmelden?weiter=/gegenstaende/${encodeURIComponent(gegenstandId)}`);
 
   const status = formData.get("status");
-  if (!anfrageStatus.includes(status as AnfrageStatus))
+  if (!antwortStatus.some((erlaubt) => erlaubt === status))
     return { fehler: "Diesen Status gibt es nicht. Bitte lade die Seite neu." };
 
   const supabase = await createClient();

@@ -3,15 +3,18 @@ import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
 import GegenstandKarte from "@/components/GegenstandKarte";
 import KategorieFilter from "@/components/KategorieFilter";
+import SuchFeld from "@/components/SuchFeld";
 import { kategorien } from "@/data/gegenstaende";
 import { ladeVerfuegbare } from "@/lib/items";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const { kategorie } = await searchParams;
+  const { kategorie, q } = await searchParams;
   // Unbekannte oder fehlende Kategorie in der Adresse → „Alle“.
   const aktiveKategorie = kategorien.find((k) => k === kategorie) ?? null;
+  // Leeres Suchwort (oder nur Leerzeichen) in der Adresse → keine Suche.
+  const suche = (typeof q === "string" ? q.trim().slice(0, 100) : "") || null;
 
-  const sichtbar = await ladeVerfuegbare(aktiveKategorie);
+  const sichtbar = await ladeVerfuegbare(aktiveKategorie, suche);
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-12 sm:block">
@@ -39,6 +42,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           >
             Gegenstand anbieten
           </Link>
+          <Link
+            href="/meine-anfragen"
+            className="rounded-xl border border-border px-5 py-3 font-medium transition hover:border-foreground"
+          >
+            Meine Anfragen
+          </Link>
         </div>
       </section>
 
@@ -64,7 +73,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <h2 id="gegenstaende-titel" className="mb-4 text-2xl font-semibold">
           Gerade ausleihbar
         </h2>
-        <KategorieFilter aktiv={aktiveKategorie} />
+        <SuchFeld suche={suche} kategorie={aktiveKategorie} />
+        <KategorieFilter aktiv={aktiveKategorie} suche={suche} />
         {sichtbar.length > 0 ? (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {sichtbar.map((gegenstand, index) => (
@@ -75,13 +85,17 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </ul>
         ) : (
           <p className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-muted">
-            {aktiveKategorie ? "In dieser Kategorie ist gerade nichts frei." : "Gerade ist nichts frei."}{" "}
+            {suche
+              ? `Nichts gefunden für „${suche}“.`
+              : aktiveKategorie
+                ? "In dieser Kategorie ist gerade nichts frei."
+                : "Gerade ist nichts frei."}{" "}
             <Link
-              href={aktiveKategorie ? "/" : "/anbieten"}
+              href={suche || aktiveKategorie ? "/" : "/anbieten"}
               scroll={false}
               className="font-medium text-foreground underline"
             >
-              {aktiveKategorie ? "Alle Gegenstände ansehen" : "Biete den ersten Gegenstand an"}
+              {suche || aktiveKategorie ? "Alle Gegenstände ansehen" : "Biete den ersten Gegenstand an"}
             </Link>
           </p>
         )}
