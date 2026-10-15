@@ -2,6 +2,7 @@
 
 import { useOptimistic, useState, useTransition, type FormEvent } from "react";
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { Check, CircleAlert } from "lucide-react";
 import { motion, useAnimationControls } from "motion/react";
 import { anfrageUmschalten } from "@/app/gegenstaende/[id]/actions";
@@ -42,7 +43,14 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
       let meldung: string | undefined;
       try {
         meldung = (await anfrageUmschalten(gegenstandId, {}, daten)).fehler;
-      } catch {
+      } catch (e) {
+        // Läuft die Sitzung ab, leitet die Action zur Anmeldung weiter (das ist ein Fehler, den Next selbst
+        // behandelt): Dann keine Fehlermeldung zeigen, die Weiterleitung übernimmt Next.
+        try {
+          unstable_rethrow(e);
+        } catch {
+          return;
+        }
         meldung = verbindungsFehler;
       }
       if (meldung) {
