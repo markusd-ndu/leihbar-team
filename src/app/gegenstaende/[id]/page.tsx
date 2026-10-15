@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ImageOff, MapPin, User } from "lucide-react";
 import AnfrageButton from "@/components/AnfrageButton";
 import ErhalteneAnfragen from "@/components/ErhalteneAnfragen";
+import TeilenButton from "@/components/TeilenButton";
 import { hatAngefragt, ladeAnzahlAnfragen, ladeErhalteneAnfragen } from "@/lib/anfragen";
 import { ladeNutzer } from "@/lib/auth";
 import { ladeGegenstand } from "@/lib/items";
@@ -14,7 +15,21 @@ export async function generateMetadata({
   params,
 }: PageProps<"/gegenstaende/[id]">): Promise<Metadata> {
   const { id } = await params;
-  return { title: (await ladeGegenstand(id))?.titel ?? "Nicht gefunden" };
+  const gegenstand = await ladeGegenstand(id);
+  if (!gegenstand) return { title: "Nicht gefunden" };
+
+  // Das Vorschaubild kommt aus opengraph-image.tsx in diesem Ordner.
+  const beschreibung = `${preisText(gegenstand.preisProTag)} · ${gegenstand.beschreibung}`;
+  return {
+    title: gegenstand.titel,
+    description: beschreibung,
+    openGraph: {
+      title: `${gegenstand.titel} – Leihbar`,
+      description: beschreibung,
+      url: `/gegenstaende/${id}`,
+      type: "website",
+    },
+  };
 }
 
 export default async function GegenstandSeite({ params }: PageProps<"/gegenstaende/[id]">) {
@@ -59,7 +74,10 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
         </div>
 
         <div className="order-1 sm:order-2">
-          <p className="mb-1 text-sm text-muted">{gegenstand.kategorie}</p>
+          <div className="mb-1 flex items-center justify-between gap-3">
+            <p className="text-sm text-muted">{gegenstand.kategorie}</p>
+            <TeilenButton titel={gegenstand.titel} />
+          </div>
           <h1 className="mb-2 text-3xl font-bold leading-tight">{gegenstand.titel}</h1>
           <p className="mb-4 text-xl font-semibold">{preisText(gegenstand.preisProTag)}</p>
 
