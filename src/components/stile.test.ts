@@ -29,6 +29,20 @@ describe("knopf", () => {
     expect(k).toContain("text-base");
   });
 
+  it("flach hat keinen Schatten und kein Reinrutschen, behält aber die Schrift", () => {
+    const k = klassen(knopf("haupt", { flach: true }));
+    expect(k).not.toContain("shadow-1");
+    expect(k).not.toContain("active:translate-x-1");
+    expect(k).toContain("text-base");
+    expect(k).toContain("px-5");
+  });
+
+  it("hoch hat genau eine Mindesthöhe: 48 statt 44 px", () => {
+    const k = klassen(knopf("haupt", { hoch: true }));
+    expect(k).toContain("min-h-12");
+    expect(k).not.toContain("min-h-11");
+  });
+
   it("der Rahmen-Knopf hat nie einen Schatten", () => {
     expect(klassen(knopf("rahmen"))).not.toContain("shadow-1");
   });

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock, ImageOff, MapPin, User } from "lucide-react";
 import type { Gegenstand } from "@/data/gegenstaende";
+import { plakette } from "@/components/stile";
 import { preisText } from "@/lib/format";
 
 type Props = {
@@ -44,7 +45,7 @@ export default function GegenstandKarte({ gegenstand, vorladen = false, uebersch
           </div>
         )}
         {verliehen && (
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-warning-bg px-3 py-1 text-sm font-medium text-warning">
+          <span className={`${plakette} absolute left-3 top-3 border-dashed bg-raised text-ink`}>
             <Clock size={16} aria-hidden />
             Gerade verliehen
           </span>

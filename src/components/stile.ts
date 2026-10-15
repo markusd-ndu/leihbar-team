@@ -31,16 +31,25 @@ type Groesse = {
   klein?: boolean;
   /** Quadratisch: nur ein Icon, 44 × 44 px (z. B. Teilen). */
   quadrat?: boolean;
+  /** Flach: ohne eigenen Schatten, für Knöpfe in einer Fläche, die schon einen Schatten trägt (z. B. die Karte). */
+  flach?: boolean;
+  /** Hoch: 48 statt 44 px, für die eine Hauptaktion einer Karte. */
+  hoch?: boolean;
 };
 
-export function knopf(art: Knopfart, { klein = false, quadrat = false }: Groesse = {}) {
+export function knopf(art: Knopfart, { klein = false, quadrat = false, flach = false, hoch = false }: Groesse = {}) {
   const { farbe, schatten } = varianten[art];
   const abstand = quadrat ? "px-0 text-base" : klein ? "px-4 text-sm" : "px-5 text-base";
   // Klein ist flach; sonst: 4 px gelber Schatten, gedrückt rutscht der Knopf hinein.
-  const mitSchatten = schatten && !klein;
+  const mitSchatten = schatten && !klein && !flach;
   const druck = mitSchatten ? "shadow-1 active:translate-x-1 active:translate-y-1 active:shadow-none" : "";
-  return `${knopfGrund} ${farbe} ${abstand} ${druck}`.trim();
+  // Die Höhe wird im Grundtext getauscht, nicht angehängt: zwei min-h-Klassen widersprächen sich.
+  const grund = hoch ? knopfGrund.replace("min-h-11", "min-h-12") : knopfGrund;
+  return `${grund} ${farbe} ${abstand} ${druck}`.trim();
 }
+
+/** Eckige Plakette mit Zeichen und Wort: Status, Kategorie. Fläche und Rahmenart (durchgezogen/gestrichelt) kommen dazu. */
+export const plakette = "inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-sm font-medium";
 
 /** Nur der Anmelden-Link im Header. */
 export const pille =
