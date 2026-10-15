@@ -1,7 +1,6 @@
-import { Hand, Recycle, Search } from "lucide-react";
 import Link from "next/link";
 import ErfolgsMeldung from "@/components/ErfolgsMeldung";
-import FeatureCard from "@/components/FeatureCard";
+import FeatureKarten from "@/components/FeatureKarten";
 import GegenstandListe from "@/components/GegenstandListe";
 import KategorieFilter from "@/components/KategorieFilter";
 import SuchFeld from "@/components/SuchFeld";
@@ -47,23 +46,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
       </section>
 
-      <section aria-label="Was Leihbar kann" className="order-last mb-14 grid gap-4 sm:order-none sm:grid-cols-3">
-        <FeatureCard
-          icon={Search}
-          titel="Alles an einem Ort"
-          text="Was andere am Campus verleihen – von Mode über Möbel bis Technik, ohne Herumfragen in Chats."
-        />
-        <FeatureCard
-          icon={Hand}
-          titel="Mit einem Klick anfragen"
-          text="Besitzer*innen sehen sofort, wer etwas ausleihen möchte. Kein Hin und Her mehr."
-        />
-        <FeatureCard
-          icon={Recycle}
-          titel="Leihen statt kaufen"
-          text="Für einmal kaufen lohnt sich selten. Leihen spart Geld und Platz in der WG."
-        />
-      </section>
+      <FeatureKarten />
 
       <section id="gegenstaende" aria-labelledby="gegenstaende-titel" className="scroll-mt-4">
         <h2 id="gegenstaende-titel" className="mb-4 font-display text-2xl font-normal">
