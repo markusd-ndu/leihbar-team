@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Share2 } from "lucide-react";
+import { Check, CircleAlert, Share2 } from "lucide-react";
+import { knopf } from "@/components/stile";
 
 type Props = {
   titel: string;
@@ -75,7 +76,9 @@ export default function TeilenButton({ titel }: Props) {
           </span>
         )}
         {rueckmeldung === "fehler" && (
-          <span className="text-danger">Der Link konnte nicht kopiert werden.</span>
+          <span className="flex items-center gap-1 text-danger">
+            <CircleAlert size={16} aria-hidden /> Der Link konnte nicht kopiert werden.
+          </span>
         )}
       </p>
       <button
@@ -83,7 +86,7 @@ export default function TeilenButton({ titel }: Props) {
         onClick={teilen}
         aria-label={`„${titel}“ teilen`}
         title="Teilen"
-        className="flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-border bg-card text-foreground transition hover:bg-background"
+        className={`${knopf("zweit")} px-0`}
       >
         <Share2 size={20} aria-hidden />
       </button>

@@ -1,80 +1,151 @@
 @import "tailwindcss";
 
+/* Design-System „Leihbar Team“ (Update 2026). Jede Farbe heißt nach ihrer Aufgabe.
+   Papier ist das helle Thema, Nacht das dunkle (folgt den Systemeinstellungen). */
 :root {
-  --background: #fafaf7;
-  --foreground: #16161a;
-  --accent: #d6401f;
-  --accent-soft: #fde8e3;
-  --on-accent: #ffffff; /* Text auf der Akzentfarbe */
-  --muted: #6b6b76;
-  --card: #ffffff;
-  --border: #e6e4de;
+  --bg: #f3efe4;
+  --raised: #fffdf7;
+  --highlight: #fff1b8;
+  --ink: #111111;
+  --muted: #5f5b55;
+  --on-action: #ffffff;
+  --on-signal: #111111; /* Tinte auf Signalgelb, in beiden Themen */
+  --disabled-text: #5f5b55;
+  --line: #111111;
+  --focus: #111111;
+  --action: #111111;
+  --action-hover: #33312d;
+  --action-pressed: #000000;
+  --disabled: #e2ddd0;
+  --signal: #ffd400;
+  --success: #1e6b3a;
+  --success-bg: #e1efdc;
+  --warning: #8a4b00;
+  --warning-bg: #fff1b8;
   --danger: #b42318;
-  /* Design-System „Leihbar Team“ (Papier): bisher nur auf „Meine Gegenstände“ in Benutzung. */
-  --lb-bg: #f3efe4;
-  --lb-raised: #fffdf7;
-  --lb-highlight: #fff1b8;
-  --lb-text: #111111;
-  --lb-muted: #5f5b55;
-  --lb-border: #111111;
-  --lb-action: #111111;
-  --lb-action-hover: #33312d;
-  --lb-action-pressed: #000000;
-  --lb-on-action: #ffffff;
-  --lb-signal: #ffd400;
-  --lb-on-signal: #111111;
-  --lb-shadow-1: 4px 4px 0 #ffd400;
-  --lb-shadow-2: 8px 8px 0 #111111;
+  --danger-bg: #fbe7e4;
+  /* Harte Schatten ohne Unschärfe, in 4-px-Schritten. */
+  --shadow-1-wert: 4px 4px 0 var(--signal);
+  --shadow-2-wert: 8px 8px 0 #111111;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161513;
+    --raised: #211f1c;
+    --highlight: #3a3210;
+    --ink: #f3efe4;
+    --muted: #b8b2a7;
+    --on-action: #111111;
+    --disabled-text: #b8b2a7;
+    --line: #d9d3c7;
+    --focus: #ffd400;
+    --action: #f3efe4;
+    --action-hover: #dcd6c9;
+    --action-pressed: #ffffff;
+    --disabled: #34322d;
+    --success: #7dcf94;
+    --success-bg: #17301f;
+    --warning: #f2b84b;
+    --warning-bg: #3a3210;
+    --danger: #ff8b7b;
+    --danger-bg: #3b1a16;
+    --shadow-2-wert: 8px 8px 0 var(--signal);
+    color-scheme: dark;
+  }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-on-accent: var(--on-accent);
+  --color-bg: var(--bg);
+  --color-raised: var(--raised);
+  --color-highlight: var(--highlight);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-card: var(--card);
-  --color-border: var(--border);
+  --color-on-action: var(--on-action);
+  --color-on-signal: var(--on-signal);
+  --color-disabled-text: var(--disabled-text);
+  --color-border: var(--line);
+  --color-focus: var(--focus);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-pressed: var(--action-pressed);
+  --color-disabled: var(--disabled);
+  --color-signal: var(--signal);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
   --color-danger: var(--danger);
-  --color-lb-bg: var(--lb-bg);
-  --color-lb-raised: var(--lb-raised);
-  --color-lb-highlight: var(--lb-highlight);
-  --color-lb-text: var(--lb-text);
-  --color-lb-muted: var(--lb-muted);
-  --color-lb-border: var(--lb-border);
-  --color-lb-action: var(--lb-action);
-  --color-lb-action-hover: var(--lb-action-hover);
-  --color-lb-action-pressed: var(--lb-action-pressed);
-  --color-lb-on-action: var(--lb-on-action);
-  --color-lb-signal: var(--lb-signal);
-  --color-lb-on-signal: var(--lb-on-signal);
-  --shadow-lb-1: var(--lb-shadow-1);
-  --shadow-lb-2: var(--lb-shadow-2);
-  /* Ecken: rounded-xl für Knöpfe und Felder, rounded-2xl für Karten und Flächen. */
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-danger-bg: var(--danger-bg);
+  --shadow-1: var(--shadow-1-wert);
+  --shadow-2: var(--shadow-2-wert);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-display: var(--font-archivo-black), var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --ease-standard: var(--easing-standard);
+  --ease-exit: var(--easing-exit);
+}
+
+/* Schriftgrößen wachsen mit dem Bildschirm: erster Wert am Handy (360 px), letzter am Laptop (1280 px). */
+@theme {
+  --text-xs: 0.75rem; /* nur die Zahl im Zähler an der Glocke */
+  --text-xs--line-height: 1.5;
+  --text-sm: clamp(0.875rem, 0.851rem + 0.109vw, 0.9375rem);
+  --text-sm--line-height: 1.45;
+  --text-base: clamp(1rem, 0.951rem + 0.217vw, 1.125rem);
+  --text-base--line-height: 1.5;
+  --text-lg: clamp(1.125rem, 1.076rem + 0.217vw, 1.25rem);
+  --text-lg--line-height: 1.3;
+  --text-xl: clamp(1.25rem, 1.152rem + 0.435vw, 1.5rem);
+  --text-xl--line-height: 1.25;
+  --text-2xl: clamp(1.5rem, 1.353rem + 0.652vw, 1.875rem);
+  --text-2xl--line-height: 1.2;
+  --text-3xl: clamp(1.75rem, 1.554rem + 0.87vw, 2.25rem);
+  --text-3xl--line-height: 1.1;
+  --text-4xl: clamp(2.25rem, 1.761rem + 2.174vw, 3.5rem);
+  --text-4xl--line-height: 1.05;
+  --text-5xl: initial;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+/* Jede Seitenüberschrift: Archivo Black in Großbuchstaben (die Schrift hat nur eine Stärke). */
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
 /* Sichtbarer Rahmen für alle, die mit der Tastatur navigieren. Nicht entfernen, nur ersetzen. */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
-/* Wer in den Systemeinstellungen „Bewegung reduzieren“ gewählt hat, bekommt keine Animationen. */
+/* Wer in den Systemeinstellungen „Bewegung reduzieren“ gewählt hat, bekommt keine Bewegung. */
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
   *,
   ::before,
   ::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition-duration: 0ms !important;
   }
 }

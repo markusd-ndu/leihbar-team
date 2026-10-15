@@ -27,10 +27,10 @@ export default function KategorieFilter({ aktiv, suche = null }: Props) {
                 }}
                 scroll={false}
                 aria-current={istAktiv ? "true" : undefined}
-                className={`flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition ${
+                className={`flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition duration-(--duration-fast) ease-standard active:translate-y-0.5 ${
                   istAktiv
-                    ? "border-accent bg-accent text-on-accent"
-                    : "border-border bg-card text-foreground hover:border-foreground"
+                    ? "border-action bg-action text-on-action"
+                    : "border-border bg-raised text-ink hover:bg-bg hover:shadow-[inset_0_0_0_1px_var(--line)]"
                 }`}
               >
                 {name}

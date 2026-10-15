@@ -4,6 +4,7 @@ import FeatureCard from "@/components/FeatureCard";
 import GegenstandKarte from "@/components/GegenstandKarte";
 import KategorieFilter from "@/components/KategorieFilter";
 import SuchFeld from "@/components/SuchFeld";
+import { hinweisFlaeche, knopf } from "@/components/stile";
 import { kategorien } from "@/data/gegenstaende";
 import { ladeVerfuegbare } from "@/lib/items";
 
@@ -19,34 +20,22 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-12 sm:block">
       <section className="mb-14">
-        <p className="mb-3 inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-foreground">
+        <p className="mb-3 inline-block rounded-full bg-highlight px-3 py-1 text-sm font-medium text-ink">
           NDU · Wintersemester 2026
         </p>
-        <h1 className="mb-4 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl">
+        <h1 className="mb-4 max-w-2xl text-4xl">
           Leihen statt kaufen.
         </h1>
-        <p className="mb-8 max-w-xl text-lg text-muted">
+        <p className="mb-8 max-w-xl text-lg leading-normal text-muted">
           Abendkleid für den Ball, Akkuschrauber fürs WG-Regal, Zelt fürs
           Festival – am Campus hat es schon jemand. Anbieten, finden, anfragen.
         </p>
         <div className="flex flex-wrap gap-3">
-          <a
-            href="#gegenstaende"
-            className="rounded-xl bg-accent px-5 py-3 font-medium text-on-accent shadow-sm transition hover:opacity-90"
-          >
+          <a href="#gegenstaende" className={knopf("haupt")}>
             Gegenstände ansehen
           </a>
-          <Link
-            href="/anbieten"
-            className="rounded-xl border border-border px-5 py-3 font-medium transition hover:border-foreground"
-          >
+          <Link href="/anbieten" className={knopf("rahmen")}>
             Gegenstand anbieten
-          </Link>
-          <Link
-            href="/meine-anfragen"
-            className="rounded-xl border border-border px-5 py-3 font-medium transition hover:border-foreground"
-          >
-            Meine Anfragen
           </Link>
         </div>
       </section>
@@ -70,7 +59,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       </section>
 
       <section id="gegenstaende" aria-labelledby="gegenstaende-titel" className="scroll-mt-4">
-        <h2 id="gegenstaende-titel" className="mb-4 text-2xl font-semibold">
+        <h2 id="gegenstaende-titel" className="mb-4 font-display text-2xl font-normal">
           Gerade ausleihbar
         </h2>
         <SuchFeld suche={suche} kategorie={aktiveKategorie} />
@@ -84,7 +73,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             ))}
           </ul>
         ) : (
-          <p className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-muted">
+          <p className={`${hinweisFlaeche} p-8 text-center text-muted`}>
             {suche
               ? `Nichts gefunden für „${suche}“.`
               : aktiveKategorie
@@ -93,7 +82,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             <Link
               href={suche || aktiveKategorie ? "/" : "/anbieten"}
               scroll={false}
-              className="font-medium text-foreground underline"
+              className="font-medium text-ink underline underline-offset-4"
             >
               {suche || aktiveKategorie ? "Alle Gegenstände ansehen" : "Biete den ersten Gegenstand an"}
             </Link>

@@ -1,12 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import { CircleAlert, LoaderCircle } from "lucide-react";
 import { anmelden, registrieren, type AnmeldeZustand } from "@/app/anmelden/actions";
+import { feld, fehlerKasten, fehlerSatz, hinweisFlaeche, knopf } from "@/components/stile";
 
 const start: AnmeldeZustand = { fehler: {}, email: "" };
-
-const feldKlasse =
-  "min-h-11 w-full rounded-xl border border-border bg-card px-3 py-2 text-base aria-[invalid=true]:border-danger";
 
 type Props = {
   art: "anmelden" | "registrieren";
@@ -20,7 +19,7 @@ export default function AnmeldeFormular({ art, weiter }: Props) {
 
   if (hinweis) {
     return (
-      <p role="status" className="rounded-xl border border-border bg-card px-4 py-3">
+      <p role="status" className={hinweisFlaeche}>
         {hinweis}
       </p>
     );
@@ -32,7 +31,8 @@ export default function AnmeldeFormular({ art, weiter }: Props) {
       <input type="hidden" name="weiter" value={weiter} />
 
       {fehler.allgemein && (
-        <p role="alert" className="rounded-xl border border-danger px-4 py-3 text-sm font-medium text-danger">
+        <p role="alert" className={fehlerKasten}>
+          <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
           {fehler.allgemein}
         </p>
       )}
@@ -47,12 +47,15 @@ export default function AnmeldeFormular({ art, weiter }: Props) {
           type="email"
           autoComplete="email"
           defaultValue={email}
+          readOnly={laeuft}
+          aria-busy={laeuft}
           aria-invalid={Boolean(fehler.email)}
           aria-describedby={fehler.email ? "feld-email-fehler" : undefined}
-          className={feldKlasse}
+          className={feld}
         />
         {fehler.email && (
-          <p id="feld-email-fehler" className="text-sm font-medium text-danger">
+          <p id="feld-email-fehler" className={fehlerSatz}>
+            <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
             {fehler.email}
           </p>
         )}
@@ -72,26 +75,32 @@ export default function AnmeldeFormular({ art, weiter }: Props) {
           name="passwort"
           type="password"
           autoComplete={art === "anmelden" ? "current-password" : "new-password"}
+          readOnly={laeuft}
+          aria-busy={laeuft}
           aria-invalid={Boolean(fehler.passwort)}
           aria-describedby={
             [art === "registrieren" ? "feld-passwort-hinweis" : null, fehler.passwort ? "feld-passwort-fehler" : null]
               .filter(Boolean)
               .join(" ") || undefined
           }
-          className={feldKlasse}
+          className={feld}
         />
         {fehler.passwort && (
-          <p id="feld-passwort-fehler" className="text-sm font-medium text-danger">
+          <p id="feld-passwort-fehler" className={fehlerSatz}>
+            <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
             {fehler.passwort}
           </p>
         )}
       </div>
 
+      {/* aria-busy statt disabled: der Knopf bleibt schwarz und zeigt den drehenden Kreis; ein zweiter Klick tut nichts. */}
       <button
         type="submit"
-        disabled={laeuft}
-        className="min-h-11 rounded-xl bg-accent px-5 font-medium text-on-accent shadow-sm transition hover:opacity-90 disabled:opacity-60"
+        aria-busy={laeuft}
+        onClick={(e) => laeuft && e.preventDefault()}
+        className={knopf("haupt")}
       >
+        {laeuft && <LoaderCircle size={18} aria-hidden className="animate-spin" />}
         {art === "anmelden"
           ? laeuft
             ? "Wird angemeldet …"

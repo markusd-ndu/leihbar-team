@@ -12,11 +12,11 @@ export const contentType = "image/png";
 
 // Ein Bild kann keine CSS-Tokens lesen – die Farben entsprechen den Tokens in globals.css.
 const farben = {
-  hintergrund: "#fafaf7",
-  akzent: "#d6401f",
-  akzentSanft: "#fde8e3",
-  text: "#16161a",
-  karte: "#ffffff",
+  hintergrund: "#f3efe4",
+  akzent: "#111111",
+  akzentSanft: "#fff1b8",
+  text: "#111111",
+  karte: "#fffdf7",
 };
 
 async function ladeFoto(pfad: string | null): Promise<string | null> {
@@ -80,7 +80,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           }}
         >
           <div style={{ fontSize: 52, fontWeight: 700, lineHeight: 1.15, maxWidth: 760 }}>{titel}</div>
-          <div style={{ fontSize: 44, fontWeight: 700, color: farben.akzent }}>{preis}</div>
+          <div style={{ fontSize: 44, fontWeight: 700, color: farben.text }}>{preis}</div>
         </div>
       </div>
     ),
