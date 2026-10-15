@@ -12,6 +12,7 @@ const statusFarbe: Record<AnfrageStatus, string> = {
   offen: "text-foreground",
   angenommen: "text-foreground",
   abgelehnt: "text-danger",
+  abgelaufen: "text-muted",
 };
 
 export default async function MeineAnfragen() {
