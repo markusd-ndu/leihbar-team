@@ -7,6 +7,7 @@
   --raised: #fffdf7;
   --highlight: #fff1b8;
   --ink: #111111;
+  --marke: #111111; /* Logo: Tinte auf Papier, reinweiß im dunklen Modus */
   --muted: #5f5b55;
   --on-action: #ffffff;
   --on-signal: #111111; /* Tinte auf Signalgelb, in beiden Themen */
@@ -41,6 +42,7 @@
     --raised: #211f1c;
     --highlight: #3a3210;
     --ink: #f3efe4;
+    --marke: #ffffff;
     --muted: #b8b2a7;
     --on-action: #111111;
     --disabled-text: #b8b2a7;
@@ -66,6 +68,7 @@
   --color-raised: var(--raised);
   --color-highlight: var(--highlight);
   --color-ink: var(--ink);
+  --color-marke: var(--marke);
   --color-muted: var(--muted);
   --color-on-action: var(--on-action);
   --color-on-signal: var(--on-signal);

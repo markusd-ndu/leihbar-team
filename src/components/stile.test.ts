@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { knopf } from "@/components/stile";
+import { knopf, navKnopf } from "@/components/stile";
 
 // Tailwind löst Widersprüche nach der Reihenfolge im Stylesheet auf, nicht nach dem Klassentext.
 // Deshalb darf jede Eigenschaft in einem Knopf nur einmal vorkommen.
@@ -45,5 +45,13 @@ describe("knopf", () => {
 
   it("der Rahmen-Knopf hat nie einen Schatten", () => {
     expect(klassen(knopf("rahmen"))).not.toContain("shadow-1");
+  });
+});
+
+describe("navKnopf", () => {
+  it("ist mindestens 44 px hoch und trägt den gelben Schatten", () => {
+    const k = klassen(navKnopf);
+    expect(k).toContain("min-h-11");
+    expect(k).toContain("shadow-1");
   });
 });

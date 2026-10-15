@@ -59,7 +59,7 @@ export default async function GegenstandSeite({ params }: PageProps<"/gegenstaen
       {/* Am Handy stehen Titel, Preis und Button über dem Bild – so ist der Button ohne Scrollen sichtbar.
           Ab 768 px steht die Karte rechts und bleibt beim Scrollen im Bild. */}
       <article className="grid gap-6 md:grid-cols-[minmax(0,1fr)_20rem] md:items-start md:gap-x-8">
-        <div className="border border-border bg-raised p-5 shadow-1 md:sticky md:top-4 md:col-start-2 md:row-span-2 md:row-start-1">
+        <div className="border border-border bg-raised p-5 shadow-1 md:sticky md:top-20 md:col-start-2 md:row-span-2 md:row-start-1">
           <div className="flex items-center justify-between gap-3">
             {gegenstand.verfuegbar ? (
               <span className={`${plakette} bg-raised text-ink`}>

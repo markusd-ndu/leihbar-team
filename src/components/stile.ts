@@ -51,6 +51,17 @@ export function knopf(art: Knopfart, { klein = false, quadrat = false, flach = f
 /** Eckige Plakette mit Zeichen und Wort: Status, Kategorie. Fläche und Rahmenart (durchgezogen/gestrichelt) kommen dazu. */
 export const plakette = "inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-sm font-medium";
 
+/** „Anbieten“ im Header: die eine Hauptaktion der Leiste. Eigenständig statt von knopf() abgeleitet, weil sich Klassen dort nicht überschreiben lassen. */
+export const navKnopf =
+  "inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 border border-transparent bg-action px-3 text-sm font-medium text-on-action shadow-1 " +
+  "transition duration-(--duration-fast) ease-standard hover:bg-action-hover " +
+  "active:translate-x-1 active:translate-y-1 active:bg-action-pressed active:shadow-none sm:px-4";
+
+/** „Konto“ im Header (nur ab 768 px): eckig mit Rahmen, öffnet den Zettel mit den persönlichen Seiten. */
+export const kontoKnopf =
+  "relative hidden min-h-11 shrink-0 items-center gap-1.5 border border-border px-3 text-sm font-medium text-ink " +
+  "transition-colors duration-(--duration-fast) ease-standard hover:bg-bg aria-expanded:bg-bg md:inline-flex";
+
 /** Nur der Anmelden-Link im Header. */
 export const pille =
   "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border px-4 text-sm font-medium text-ink transition duration-(--duration-fast) ease-standard hover:bg-raised active:translate-y-0.5";
