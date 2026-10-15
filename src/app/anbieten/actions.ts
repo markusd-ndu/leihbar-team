@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { kategorien } from "@/data/gegenstaende";
+import { angebotenAdresse } from "@/lib/angeboten";
 import { ladeNutzer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -61,16 +62,20 @@ export async function gegenstandAnbieten(
   if (!nutzer) redirect("/anmelden?weiter=/anbieten");
 
   const supabase = await createClient();
-  const { error } = await supabase.from("items").insert({
-    owner_id: nutzer.id,
-    titel: werte.titel,
-    kategorie: werte.kategorie,
-    beschreibung: werte.beschreibung,
-    ort: werte.ort,
-    besitzer: werte.besitzer,
-    preis_pro_tag: Math.round(preis * 100) / 100,
-  });
-  if (error) {
+  const { data: neu, error } = await supabase
+    .from("items")
+    .insert({
+      owner_id: nutzer.id,
+      titel: werte.titel,
+      kategorie: werte.kategorie,
+      beschreibung: werte.beschreibung,
+      ort: werte.ort,
+      besitzer: werte.besitzer,
+      preis_pro_tag: Math.round(preis * 100) / 100,
+    })
+    .select("id")
+    .single<{ id: string }>();
+  if (error || !neu) {
     return {
       fehler: { allgemein: "Das Speichern hat leider nicht geklappt. Bitte versuch es gleich noch einmal." },
       werte,
@@ -78,5 +83,6 @@ export async function gegenstandAnbieten(
   }
 
   revalidatePath("/");
-  redirect("/#gegenstaende");
+  // Die Startseite zeigt mit der ID die Erfolgsmeldung und hebt die neue Karte hervor.
+  redirect(angebotenAdresse(neu.id));
 }

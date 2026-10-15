@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import GegenstandKarte from "@/components/GegenstandKarte";
@@ -12,7 +13,12 @@ type Props = {
   /** Für den Satz im leeren Zustand. */
   suche: string | null;
   kategorie: Kategorie | null;
+  /** ID des gerade angebotenen Gegenstands: seine Karte wird kurz hervorgehoben. */
+  hervorheben?: string | null;
 };
+
+/** Wie lange die Hervorhebung voll sichtbar bleibt, bevor sie in 0,3 s ausblendet. */
+const HERVORGEHOBEN_MS = 2500;
 
 /**
  * Die Liste der Startseite. Beim Wechsel der Kategorie blenden die übrigen Karten aus, neue blenden ein
@@ -20,9 +26,21 @@ type Props = {
  * „Bewegung reduzieren“: Motion würde zwar das Gleiten weglassen, aber das Ein- und Ausblenden behalten –
  * deshalb ist die Dauer dann ganz 0.
  */
-export default function GegenstandListe({ gegenstaende, suche, kategorie }: Props) {
+export default function GegenstandListe({ gegenstaende, suche, kategorie, hervorheben = null }: Props) {
   const reduziert = useReducedMotion();
   const gleiten = reduziert ? { duration: 0 } : { duration: dauer.slow, ease: kurve.standard };
+  const [markiert, setMarkiert] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!hervorheben) return;
+    const an = setTimeout(() => setMarkiert(hervorheben), 0);
+    const aus = setTimeout(() => setMarkiert(null), HERVORGEHOBEN_MS);
+    return () => {
+      clearTimeout(an);
+      clearTimeout(aus);
+    };
+  }, [hervorheben]);
+
   const ausblenden = reduziert ? { duration: 0 } : { duration: dauer.base, ease: kurve.exit };
 
   return (
@@ -34,12 +52,26 @@ export default function GegenstandListe({ gegenstaende, suche, kategorie }: Prop
             <motion.li
               key={gegenstand.id}
               layout="position"
+              className="relative"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: gleiten }}
               exit={{ opacity: 0, transition: ausblenden }}
               transition={gleiten}
             >
               <GegenstandKarte gegenstand={gegenstand} vorladen={index === 0} />
+              {/* Gelber Schleier über der Karte, nur Deckkraft; klickt nicht dazwischen. */}
+              <AnimatePresence>
+                {markiert === gegenstand.id && (
+                  <motion.span
+                    aria-hidden
+                    data-hervorhebung
+                    className="pointer-events-none absolute inset-0 border-4 border-on-signal bg-signal/25"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: reduziert ? 0 : dauer.fast } }}
+                    exit={{ opacity: 0, transition: ausblenden }}
+                  />
+                )}
+              </AnimatePresence>
             </motion.li>
           ))}
         </AnimatePresence>

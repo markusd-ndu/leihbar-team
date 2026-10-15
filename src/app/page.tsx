@@ -1,21 +1,28 @@
 import { Hand, Recycle, Search } from "lucide-react";
 import Link from "next/link";
+import ErfolgsMeldung from "@/components/ErfolgsMeldung";
 import FeatureCard from "@/components/FeatureCard";
 import GegenstandListe from "@/components/GegenstandListe";
 import KategorieFilter from "@/components/KategorieFilter";
 import SuchFeld from "@/components/SuchFeld";
 import { knopf } from "@/components/stile";
 import { kategorien } from "@/data/gegenstaende";
+import { neuerEigenerGegenstand } from "@/lib/angeboten";
+import { ladeNutzer } from "@/lib/auth";
 import { ladeVerfuegbare } from "@/lib/items";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const { kategorie, q } = await searchParams;
+  const { kategorie, q, angeboten } = await searchParams;
   // Unbekannte oder fehlende Kategorie in der Adresse → „Alle“.
   const aktiveKategorie = kategorien.find((k) => k === kategorie) ?? null;
   // Leeres Suchwort (oder nur Leerzeichen) in der Adresse → keine Suche.
   const suche = (typeof q === "string" ? q.trim().slice(0, 100) : "") || null;
 
   const sichtbar = await ladeVerfuegbare(aktiveKategorie, suche);
+  // Nur ein eigener Gegenstand aus der Liste bekommt Meldung und Hervorhebung –
+  // sonst könnte ein selbst gebauter Link ein falsches „Geschafft“ zeigen.
+  const nutzer = await ladeNutzer();
+  const neu = neuerEigenerGegenstand(angeboten, sichtbar, nutzer?.id ?? null);
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-12 sm:block">
@@ -64,8 +71,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </h2>
         <SuchFeld suche={suche} kategorie={aktiveKategorie} />
         <KategorieFilter aktiv={aktiveKategorie} suche={suche} />
-        <GegenstandListe gegenstaende={sichtbar} suche={suche} kategorie={aktiveKategorie} />
+        <GegenstandListe gegenstaende={sichtbar} suche={suche} kategorie={aktiveKategorie} hervorheben={neu} />
       </section>
+      {neu && <ErfolgsMeldung key={neu} text="Geschafft: Dein Gegenstand ist in der Liste." />}
     </main>
   );
 }
