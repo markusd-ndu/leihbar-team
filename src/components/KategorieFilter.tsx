@@ -3,10 +3,11 @@ import { kategorien, type Kategorie } from "@/data/gegenstaende";
 
 type Props = {
   aktiv: Kategorie | null; // null = „Alle“
+  suche?: string | null; // bleibt beim Wechsel der Kategorie erhalten
 };
 
 // Der Filter steckt in der Adresse (/?kategorie=Mode): teilbar, und „Zurück“ im Browser funktioniert.
-export default function KategorieFilter({ aktiv }: Props) {
+export default function KategorieFilter({ aktiv, suche = null }: Props) {
   const optionen: { name: string; kategorie: Kategorie | null }[] = [
     { name: "Alle", kategorie: null },
     ...kategorien.map((k) => ({ name: k, kategorie: k })),
@@ -20,7 +21,10 @@ export default function KategorieFilter({ aktiv }: Props) {
           return (
             <li key={name}>
               <Link
-                href={kategorie ? { pathname: "/", query: { kategorie } } : "/"}
+                href={{
+                  pathname: "/",
+                  query: { ...(kategorie && { kategorie }), ...(suche && { q: suche }) },
+                }}
                 scroll={false}
                 aria-current={istAktiv ? "true" : undefined}
                 className={`flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition ${

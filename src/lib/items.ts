@@ -36,11 +36,13 @@ export function zuGegenstand(z: Zeile): Gegenstand {
   };
 }
 
-/** Alle gerade ausleihbaren Gegenstände, neueste zuerst; optional nur eine Kategorie. */
-export async function ladeVerfuegbare(kategorie: Kategorie | null): Promise<Gegenstand[]> {
+/** Alle gerade ausleihbaren Gegenstände, neueste zuerst; optional nur eine Kategorie und/oder Suchwort im Titel. */
+export async function ladeVerfuegbare(kategorie: Kategorie | null, suche: string | null = null): Promise<Gegenstand[]> {
   const supabase = await createClient();
   let abfrage = supabase.from("items").select(spalten).eq("verfuegbar", true);
   if (kategorie) abfrage = abfrage.eq("kategorie", kategorie);
+  // %, _ und \ sind in der Mustersuche Sonderzeichen – hier sollen sie ganz normal gesucht werden.
+  if (suche) abfrage = abfrage.ilike("titel", `%${suche.replace(/[\\%_]/g, "\\$&")}%`);
   const { data, error } = await abfrage.order("created_at", { ascending: false }).overrideTypes<Zeile[]>();
   if (error) throw new Error(`Gegenstände konnten nicht geladen werden: ${error.message}`);
   return data.map(zuGegenstand);
