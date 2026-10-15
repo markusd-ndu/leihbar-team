@@ -36,8 +36,6 @@ const schatten: Variants = {
   ruhe: { x: 4, y: 4, transition: weich },
   gedimmt: { x: 4, y: 4, transition: weich },
   hover: { x: 8, y: 8, transition: weich },
-  // Gedrückt: Der Zettel rutscht in seinen Schatten.
-  druck: { x: 0, y: 0, transition: { duration: dauer.fast, ease: kurve.standard } },
 };
 
 const nadel: Variants = {
@@ -61,12 +59,11 @@ const gesten: Record<Zeichen, Variants> = {
       transition: { duration: dauer.slow, ease: kurve.standard },
     },
   },
-  // Die Hand winkt einmal kurz; beim Drücken tippt sie ab.
+  // Die Hand winkt einmal kurz.
   hand: {
     ruhe: { rotate: 0, scale: 1, transition: weich },
     gedimmt: { rotate: 0, scale: 1 },
     hover: { rotate: [0, -14, 12, -5, 0], transition: { duration: 0.4, ease: kurve.standard } },
-    druck: { scale: 0.9, transition: { duration: dauer.fast, ease: kurve.standard } },
   },
   // Der Kreislauf läuft genau ein Drittel weiter (120°), einmal.
   kreislauf: {
@@ -84,6 +81,7 @@ const marker: Variants = {
   hover: (wort: number) => ({ scaleX: 1, transition: { duration: dauer.base, ease: kurve.standard, delay: wort * 0.03 } }),
 };
 
+// Kein `whileTap`: Motion macht dafür jedes Element per `tabIndex` fokussierbar – die Karten sind aber nur Anzeige.
 export default function FeatureCard({ icon: Icon, titel, text, zeichen, gedimmt, beruehrt, still, onBeruehrung }: Props) {
   // Ohne Bewegung kein Zustand und keine Handler: Die Karte bleibt, wie sie ist.
   const bewegt = !still;
@@ -95,7 +93,6 @@ export default function FeatureCard({ icon: Icon, titel, text, zeichen, gedimmt,
       initial="ruhe"
       animate={bewegt && gedimmt ? "gedimmt" : "ruhe"}
       whileHover={bewegt ? "hover" : undefined}
-      whileTap={bewegt && zeichen === "hand" ? "druck" : undefined}
       onHoverStart={bewegt ? () => onBeruehrung(true) : undefined}
       onHoverEnd={bewegt ? () => onBeruehrung(false) : undefined}
     >
