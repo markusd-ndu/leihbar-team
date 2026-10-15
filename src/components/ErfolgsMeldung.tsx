@@ -25,7 +25,8 @@ export default function ErfolgsMeldung({ text }: { text: string }) {
     const adresse = new URL(window.location.href);
     if (adresse.searchParams.has("angeboten")) {
       adresse.searchParams.delete("angeboten");
-      window.history.replaceState(window.history.state, "", adresse.pathname + adresse.search + adresse.hash);
+      // null (nicht der alte Zustand), wie in der Next.js-Doku: So gleicht Next seinen Router-Zustand mit der neuen Adresse ab.
+      window.history.replaceState(null, "", adresse.pathname + adresse.search + adresse.hash);
     }
     const zeigen = setTimeout(() => setOffen(true), 100);
     const schliessen = setTimeout(() => setOffen(false), 100 + STEHT_MS);

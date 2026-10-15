@@ -7,7 +7,8 @@ import KategorieFilter from "@/components/KategorieFilter";
 import SuchFeld from "@/components/SuchFeld";
 import { knopf } from "@/components/stile";
 import { kategorien } from "@/data/gegenstaende";
-import { angebotenId } from "@/lib/angeboten";
+import { neuerEigenerGegenstand } from "@/lib/angeboten";
+import { ladeNutzer } from "@/lib/auth";
 import { ladeVerfuegbare } from "@/lib/items";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
@@ -18,10 +19,10 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const suche = (typeof q === "string" ? q.trim().slice(0, 100) : "") || null;
 
   const sichtbar = await ladeVerfuegbare(aktiveKategorie, suche);
-  // Nur eine gültige ID, die wirklich in der Liste steht, bekommt Meldung und Hervorhebung –
+  // Nur ein eigener Gegenstand aus der Liste bekommt Meldung und Hervorhebung –
   // sonst könnte ein selbst gebauter Link ein falsches „Geschafft“ zeigen.
-  const neueId = angebotenId(angeboten);
-  const neu = neueId !== null && sichtbar.some((g) => g.id === neueId) ? neueId : null;
+  const nutzer = await ladeNutzer();
+  const neu = neuerEigenerGegenstand(angeboten, sichtbar, nutzer?.id ?? null);
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-12 sm:block">
