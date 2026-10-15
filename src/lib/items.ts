@@ -1,5 +1,6 @@
 import { cache } from "react";
 import type { Gegenstand, Kategorie } from "@/data/gegenstaende";
+import { istUuid } from "@/lib/angeboten";
 import type { Nutzer } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,8 +19,6 @@ export type Zeile = {
 };
 
 export const spalten = "id, titel, kategorie, beschreibung, besitzer, ort, preis_pro_tag, verfuegbar, bild_url, owner_id";
-
-const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function zuGegenstand(z: Zeile): Gegenstand {
   return {
@@ -50,7 +49,7 @@ export async function ladeVerfuegbare(kategorie: Kategorie | null, suche: string
 
 /** Ein Gegenstand per ID – `null`, wenn es ihn nicht gibt (auch bei einer ungültigen Adresse). */
 export const ladeGegenstand = cache(async (id: string): Promise<Gegenstand | null> => {
-  if (!uuid.test(id)) return null;
+  if (!istUuid(id)) return null;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("items")
