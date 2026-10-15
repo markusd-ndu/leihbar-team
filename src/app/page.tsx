@@ -1,10 +1,10 @@
 import { Hand, Recycle, Search } from "lucide-react";
 import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
-import GegenstandKarte from "@/components/GegenstandKarte";
+import GegenstandListe from "@/components/GegenstandListe";
 import KategorieFilter from "@/components/KategorieFilter";
 import SuchFeld from "@/components/SuchFeld";
-import { hinweisFlaeche, knopf } from "@/components/stile";
+import { knopf } from "@/components/stile";
 import { kategorien } from "@/data/gegenstaende";
 import { ladeVerfuegbare } from "@/lib/items";
 
@@ -64,30 +64,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </h2>
         <SuchFeld suche={suche} kategorie={aktiveKategorie} />
         <KategorieFilter aktiv={aktiveKategorie} suche={suche} />
-        {sichtbar.length > 0 ? (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {sichtbar.map((gegenstand, index) => (
-              <li key={gegenstand.id}>
-                <GegenstandKarte gegenstand={gegenstand} vorladen={index === 0} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={`${hinweisFlaeche} p-8 text-center text-muted`}>
-            {suche
-              ? `Nichts gefunden für „${suche}“.`
-              : aktiveKategorie
-                ? "In dieser Kategorie ist gerade nichts frei."
-                : "Gerade ist nichts frei."}{" "}
-            <Link
-              href={suche || aktiveKategorie ? "/" : "/anbieten"}
-              scroll={false}
-              className="font-medium text-ink underline underline-offset-4"
-            >
-              {suche || aktiveKategorie ? "Alle Gegenstände ansehen" : "Biete den ersten Gegenstand an"}
-            </Link>
-          </p>
-        )}
+        <GegenstandListe gegenstaende={sichtbar} suche={suche} kategorie={aktiveKategorie} />
       </section>
     </main>
   );
