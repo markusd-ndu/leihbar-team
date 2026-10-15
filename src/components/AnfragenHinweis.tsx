@@ -9,18 +9,21 @@ import { dauer, kurve } from "@/lib/bewegung";
 import { zaehleOffeneAnfragen } from "@/lib/offene-anfragen";
 import { createClient } from "@/lib/supabase/client";
 
-type Props = {
-  nutzerId: string;
+type Hinweis = {
   /** Die eigenen Gegenstände – fragt jemand einen davon an, wird neu gezählt. */
   gegenstandIds: string[];
   /** Stand beim Laden der Seite (und nach dem eigenen Annehmen oder Ablehnen). */
   anzahl: number;
 };
 
-/** Glocke mit der Zahl offener Anfragen auf die eigenen Gegenstände; bei 0 unsichtbar. */
-export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Props) {
+/**
+ * Zahl der offenen Anfragen auf die eigenen Gegenstände, live über die Kanäle der Gegenstände.
+ * Glocke und Konto-Zettel lesen dieselbe Zahl, deshalb wird sie einmal in der Navigation gezählt.
+ * `sprung` zählt hoch, wenn sich die Zahl nach dem Laden ändert (nicht beim ersten Anzeigen).
+ */
+export function useOffeneAnfragen(nutzerId: string | null, hinweis: Hinweis | null): { zahl: number; sprung: number } {
+  const anzahl = hinweis?.anzahl ?? 0;
   const [zahl, setZahl] = useState(anzahl);
-  // Zählt hoch, wenn sich die Zahl nach dem Laden ändert: Dann springt sie einmal kurz (nicht beim ersten Anzeigen).
   const [sprung, setSprung] = useState(0);
   const [gesehen, setGesehen] = useState(anzahl);
   if (zahl !== gesehen) {
@@ -37,16 +40,16 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
   // Zählt die Abfragen mit, damit eine langsame ältere Antwort keine neuere überschreibt.
   const abfrage = useRef(0);
   // Als Text, damit eine neue, aber gleiche Liste die Kanäle nicht neu aufbaut.
-  const ids = gegenstandIds.join(",");
+  const ids = hinweis?.gegenstandIds.join(",") ?? "";
 
   useEffect(() => {
-    if (!ids) return;
+    if (!ids || !nutzerId) return;
     const supabase = createClient();
 
     async function neuLaden() {
       const nummer = ++abfrage.current;
       try {
-        const neu = await zaehleOffeneAnfragen(supabase, nutzerId);
+        const neu = await zaehleOffeneAnfragen(supabase, nutzerId!);
         if (nummer === abfrage.current) {
           setZahl(neu);
         }
@@ -55,10 +58,15 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
       }
     }
 
-    const abmelden = ids.split(",").map((id) => beobachteAnfragen(id, neuLaden));
-    return () => abmelden.forEach((ab) => ab());
+    const beenden = ids.split(",").map((id) => beobachteAnfragen(id, neuLaden));
+    return () => beenden.forEach((ab) => ab());
   }, [ids, nutzerId]);
 
+  return { zahl, sprung };
+}
+
+/** Glocke mit der Zahl offener Anfragen als eckige gelbe Plakette; bei 0 gibt es sie nicht. */
+export default function AnfragenHinweis({ zahl, sprung }: { zahl: number; sprung: number }) {
   if (zahl === 0) return null;
 
   const text = zahl === 1 ? "1 offene Anfrage an dich" : `${zahl} offene Anfragen an dich`;
@@ -75,7 +83,7 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
         initial={sprung ? { scale: 0.7 } : false}
         animate={{ scale: 1 }}
         transition={{ duration: dauer.base, ease: kurve.standard }}
-        className="min-w-6 rounded-full bg-action px-1 text-center text-xs font-semibold leading-6 text-on-action"
+        className="min-w-6 border border-border bg-signal px-1 text-center text-xs font-semibold leading-5 text-on-signal"
       >
         {zahl}
       </motion.span>

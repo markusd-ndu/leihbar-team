@@ -48,7 +48,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
       <FeatureKarten />
 
-      <section id="gegenstaende" aria-labelledby="gegenstaende-titel" className="scroll-mt-4">
+      <section id="gegenstaende" aria-labelledby="gegenstaende-titel" className="scroll-mt-24">
         <h2 id="gegenstaende-titel" className="mb-4 font-display text-2xl font-normal">
           Gerade ausleihbar
         </h2>

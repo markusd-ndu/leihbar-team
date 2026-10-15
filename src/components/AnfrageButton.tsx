@@ -18,7 +18,7 @@ type Props = {
   angemeldet: boolean;
 };
 
-const breit = "w-full sm:w-auto";
+const breit = "w-full";
 
 const verbindungsFehler = "Die Anfrage konnte nicht gespeichert werden. Bitte prüf deine Verbindung und versuch es gleich noch einmal.";
 
@@ -62,13 +62,30 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
   }
 
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="flex flex-col">
+      {/* Zeile mit Linie über die ganze Karte: -mx-5 gleicht das p-5 der Karte in page.tsx aus.
+          aria-atomic: Der Screenreader sagt „Anfragen“ und die Zahl zusammen an. */}
+      <p
+        aria-live="polite"
+        aria-atomic="true"
+        className="-mx-5 mb-4 flex items-baseline justify-between border-t border-border px-5 pt-3"
+      >
+        <span className="text-sm text-muted">Anfragen</span>
+        <AnfragenZaehler
+          gegenstandId={gegenstandId}
+          anzahl={anzahl}
+          aenderung={stand.anzahl - anzahl}
+          klick={klick}
+          className="font-display text-2xl text-ink tabular-nums"
+        />
+      </p>
+
       {angemeldet ? (
-        <motion.form onSubmit={absenden} animate={schuetteln} className="sm:shrink-0">
+        <motion.form onSubmit={absenden} animate={schuetteln}>
           <button
             type="submit"
             aria-pressed={stand.angefragt}
-            className={`${knopf(stand.angefragt ? "zweit" : "haupt")} ${breit}`}
+            className={`${knopf(stand.angefragt ? "zweit" : "haupt", { flach: true, hoch: true })} ${breit}`}
           >
             {stand.angefragt ? (
               <>
@@ -82,20 +99,16 @@ export default function AnfrageButton({ gegenstandId, anzahl, angefragt, angemel
       ) : (
         <Link
           href={`/anmelden?weiter=/gegenstaende/${encodeURIComponent(gegenstandId)}`}
-          className={`${knopf("haupt")} ${breit}`}
+          className={`${knopf("haupt", { flach: true, hoch: true })} ${breit}`}
         >
           Ausleihen anfragen
         </Link>
       )}
 
-      <p aria-live="polite" className="text-muted">
-        Anfragen:{" "}
-        <AnfragenZaehler gegenstandId={gegenstandId} anzahl={anzahl} aenderung={stand.anzahl - anzahl} klick={klick} />
-        {stand.angefragt && <span className="ml-1">· Tipp erneut, um zurückzuziehen.</span>}
-      </p>
+      {stand.angefragt && <p className="mt-3 text-sm text-muted">Tipp erneut, um zurückzuziehen.</p>}
 
       {fehler && (
-        <p role="alert" className={fehlerSatz}>
+        <p role="alert" className={`${fehlerSatz} mt-3`}>
           <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
           {fehler}
         </p>

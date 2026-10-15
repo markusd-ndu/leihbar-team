@@ -15,6 +15,8 @@ type Props = {
   aenderung?: number;
   /** Zählt bei jedem eigenen Klick hoch. */
   klick?: number;
+  /** Schrift der Zahl; ohne Angabe fett in Tinte. */
+  className?: string;
 };
 
 /**
@@ -24,7 +26,7 @@ type Props = {
  * Der eigene Klick ändert die Zahl sofort (`aenderung`); sobald nach dem Klick ein frischer Stand
  * aus der Datenbank da ist, gilt nur noch der.
  */
-export default function AnfragenZaehler({ gegenstandId, anzahl, aenderung = 0, klick = 0 }: Props) {
+export default function AnfragenZaehler({ gegenstandId, anzahl, aenderung = 0, klick = 0, className = "font-semibold text-ink" }: Props) {
   const [zahl, setZahl] = useState(anzahl);
   // Kommt vom Server ein neuer Stand (z. B. nach dem eigenen Klick), gilt der.
   const [vomServer, setVomServer] = useState(anzahl);
@@ -78,7 +80,7 @@ export default function AnfragenZaehler({ gegenstandId, anzahl, aenderung = 0, k
       initial={sprung && !weniger ?{ scale: 0.7 } : false}
       animate={{ scale: 1 }}
       transition={{ duration: dauer.base, ease: kurve.standard }}
-      className="inline-block font-semibold text-ink"
+      className={`inline-block ${className}`}
     >
       {angezeigt}
     </motion.span>
