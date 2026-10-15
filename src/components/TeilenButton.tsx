@@ -86,7 +86,7 @@ export default function TeilenButton({ titel }: Props) {
         onClick={teilen}
         aria-label={`„${titel}“ teilen`}
         title="Teilen"
-        className={`${knopf("zweit")} px-0`}
+        className={knopf("zweit", { quadrat: true })}
       >
         <Share2 size={20} aria-hidden />
       </button>

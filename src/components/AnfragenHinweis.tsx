@@ -22,18 +22,17 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
   const [zahl, setZahl] = useState(anzahl);
   // Zählt hoch, wenn sich die Zahl nach dem Laden ändert: Dann springt sie einmal kurz (nicht beim ersten Anzeigen).
   const [sprung, setSprung] = useState(0);
+  const [gesehen, setGesehen] = useState(anzahl);
+  if (zahl !== gesehen) {
+    setGesehen(zahl);
+    setSprung((s) => s + 1);
+  }
   // Kommt vom Server ein neuer Stand (z. B. nach dem eigenen Annehmen), gilt der.
   const [vomServer, setVomServer] = useState(anzahl);
   if (anzahl !== vomServer) {
     setVomServer(anzahl);
     setZahl(anzahl);
   }
-
-  // Die gerade angezeigte Zahl, damit ein Sprung nur bei einer echten Änderung ausgelöst wird.
-  const angezeigt = useRef(zahl);
-  useEffect(() => {
-    angezeigt.current = zahl;
-  }, [zahl]);
 
   // Zählt die Abfragen mit, damit eine langsame ältere Antwort keine neuere überschreibt.
   const abfrage = useRef(0);
@@ -49,7 +48,6 @@ export default function AnfragenHinweis({ nutzerId, gegenstandIds, anzahl }: Pro
       try {
         const neu = await zaehleOffeneAnfragen(supabase, nutzerId);
         if (nummer === abfrage.current) {
-          if (neu !== angezeigt.current) setSprung((s) => s + 1);
           setZahl(neu);
         }
       } catch {

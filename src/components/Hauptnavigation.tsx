@@ -7,7 +7,7 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { abmelden } from "@/app/anmelden/actions";
 import AnfragenHinweis from "@/components/AnfragenHinweis";
-import { knopf, navLink } from "@/components/stile";
+import { navLink, pille } from "@/components/stile";
 import { dauer, kurve } from "@/lib/bewegung";
 
 type Props = {
@@ -120,7 +120,7 @@ export default function Hauptnavigation({ nutzer, hinweis }: Props) {
           </form>
         </>
       ) : (
-        <Link href="/anmelden" className={`${knopf("pille")} shrink-0`}>
+        <Link href="/anmelden" className={`${pille} shrink-0`}>
           Anmelden
         </Link>
       )}
@@ -130,7 +130,7 @@ export default function Hauptnavigation({ nutzer, hinweis }: Props) {
         type="button"
         aria-label={menueOffen ? "Menü schließen" : "Menü öffnen"}
         aria-expanded={menueOffen}
-        aria-controls="mobilmenue"
+        aria-controls={menueOffen ? "mobilmenue" : undefined}
         onClick={() => setOffenBei(menueOffen ? null : pfad)}
         className="flex min-h-11 min-w-11 shrink-0 items-center justify-center text-ink md:hidden"
       >

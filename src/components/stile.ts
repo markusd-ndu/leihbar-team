@@ -1,11 +1,11 @@
 // Gemeinsame Klassen für Knöpfe, Felder und Meldungen – eine Quelle, damit alles überall gleich aussieht.
 // Der Look kommt aus dem Design-System „Leihbar Team“ (Update 2026); alle Farben sind Tokens aus globals.css.
 
+// Jede Eigenschaft kommt genau einmal vor (Größe, Abstand, Schatten): Tailwind entscheidet bei Widersprüchen
+// nach der Reihenfolge im Stylesheet, nicht nach der Reihenfolge im Klassentext – Überschreiben geht schief.
 const knopfGrund =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 border px-5 text-base font-medium " +
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 border font-medium " +
   "transition duration-(--duration-fast) ease-standard " +
-  // Gedrückt: der Knopf rutscht 4 px in seinen Schatten.
-  "active:translate-x-1 active:translate-y-1 active:shadow-none " +
   // Ausgeschaltet: klare Fläche, lesbare Schrift, kein Schatten – nicht mit Deckkraft verblasst.
   "disabled:translate-0 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-disabled disabled:text-disabled-text disabled:shadow-none " +
   // Lädt: bleibt schwarz und flach, klickt nicht mehr durch.
@@ -13,23 +13,38 @@ const knopfGrund =
 
 const varianten = {
   /** Die eine Hauptaktion einer Ansicht. */
-  haupt: `${knopfGrund} border-transparent bg-action text-on-action shadow-1 hover:bg-action-hover active:bg-action-pressed aria-busy:bg-action aria-busy:text-on-action`,
+  haupt: {
+    farbe:
+      "border-transparent bg-action text-on-action hover:bg-action-hover active:bg-action-pressed aria-busy:bg-action aria-busy:text-on-action",
+    schatten: true,
+  },
   /** Zweite oder umschaltbare Aktion. */
-  zweit: `${knopfGrund} border-border bg-raised text-ink shadow-1 hover:bg-bg`,
+  zweit: { farbe: "border-border bg-raised text-ink hover:bg-bg", schatten: true },
   /** Zweiter Aufruf neben einem Hauptknopf, ohne Schatten. */
-  rahmen: `${knopfGrund} border-border bg-transparent text-ink hover:bg-raised active:translate-0`,
-  /** Nur der Anmelden-Link im Header. */
-  pille: "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border px-4 text-sm font-medium text-ink transition duration-(--duration-fast) ease-standard hover:bg-raised active:translate-y-0.5",
+  rahmen: { farbe: "border-border bg-transparent text-ink hover:bg-raised", schatten: false },
 } as const;
 
 export type Knopfart = keyof typeof varianten;
 
-/** Klein: für Zeilen in Listen (Annehmen / Ablehnen). Flach, kleinere Schrift. */
-const klein = "px-4 text-sm shadow-none";
+type Groesse = {
+  /** Klein: für Zeilen in Listen (Annehmen / Ablehnen). Flach, kleinere Schrift. */
+  klein?: boolean;
+  /** Quadratisch: nur ein Icon, 44 × 44 px (z. B. Teilen). */
+  quadrat?: boolean;
+};
 
-export function knopf(art: Knopfart, { klein: istKlein = false }: { klein?: boolean } = {}) {
-  return istKlein ? `${varianten[art]} ${klein}` : varianten[art];
+export function knopf(art: Knopfart, { klein = false, quadrat = false }: Groesse = {}) {
+  const { farbe, schatten } = varianten[art];
+  const abstand = quadrat ? "px-0 text-base" : klein ? "px-4 text-sm" : "px-5 text-base";
+  // Klein ist flach; sonst: 4 px gelber Schatten, gedrückt rutscht der Knopf hinein.
+  const mitSchatten = schatten && !klein;
+  const druck = mitSchatten ? "shadow-1 active:translate-x-1 active:translate-y-1 active:shadow-none" : "";
+  return `${knopfGrund} ${farbe} ${abstand} ${druck}`.trim();
 }
+
+/** Nur der Anmelden-Link im Header. */
+export const pille =
+  "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border px-4 text-sm font-medium text-ink transition duration-(--duration-fast) ease-standard hover:bg-raised active:translate-y-0.5";
 
 /** Eingabefeld, Auswahl und Textfeld. 16 px und mehr, damit iOS nicht hineinzoomt. */
 export const feld =
