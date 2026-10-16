@@ -5,7 +5,7 @@ import { CircleAlert, LoaderCircle, Sparkles } from "lucide-react";
 import { kategorien } from "@/data/gegenstaende";
 import { toene, type Ton } from "@/lib/beschreibung-vorschlag";
 import { gegenstandAnbieten, type FormularZustand } from "@/app/anbieten/actions";
-import { feld as feldKlasse, fehlerKasten, fehlerSatz, knopf } from "@/components/stile";
+import { auswahlKachel, feld as feldKlasse, fehlerKasten, fehlerSatz, knopf } from "@/components/stile";
 
 const start: FormularZustand = { fehler: {}, werte: {} };
 
@@ -57,7 +57,7 @@ export default function AnbietenFormular() {
   async function beschreibungVorschlagen() {
     const f = formular.current;
     if (!f) return;
-    const feld = (name: string) => (f.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null)?.value ?? "";
+    const feld = (name: string) => (f.elements.namedItem(name) as HTMLInputElement | RadioNodeList | null)?.value ?? "";
     setVorschlagLaeuft(true);
     setVorschlagMeldung("");
     try {
@@ -117,27 +117,32 @@ export default function AnbietenFormular() {
         )}
       </Feld>
 
-      <Feld name="kategorie" label="Kategorie" fehler={fehler.kategorie}>
-        {({ id, beschreibtDurch, ungueltig }) => (
-          <select
-            id={id}
-            name="kategorie"
-            defaultValue={werte.kategorie ?? ""}
-            aria-invalid={ungueltig}
-            aria-describedby={beschreibtDurch}
-            className={feldKlasse}
-          >
-            <option value="" disabled>
-              Bitte wählen
-            </option>
-            {kategorien.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
+      <fieldset
+        aria-describedby={fehler.kategorie ? "feld-kategorie-fehler" : undefined}
+        className="flex flex-col gap-2"
+      >
+        <legend className="mb-1 font-medium">Kategorie</legend>
+        <div className="flex flex-wrap gap-2">
+          {kategorien.map((k) => (
+            <label key={k} data-ungueltig={fehler.kategorie ? "" : undefined} className={auswahlKachel}>
+              <input
+                type="radio"
+                name="kategorie"
+                value={k}
+                defaultChecked={werte.kategorie === k}
+                className="sr-only"
+              />
+              {k}
+            </label>
+          ))}
+        </div>
+        {fehler.kategorie && (
+          <p id="feld-kategorie-fehler" className={fehlerSatz}>
+            <CircleAlert size={18} aria-hidden className="mt-1 shrink-0" />
+            {fehler.kategorie}
+          </p>
         )}
-      </Feld>
+      </fieldset>
 
       <Feld name="beschreibung" label="Beschreibung" fehler={fehler.beschreibung}>
         {({ id, beschreibtDurch, ungueltig }) => (

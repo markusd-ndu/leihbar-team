@@ -74,6 +74,14 @@ export const feld =
   "disabled:cursor-not-allowed disabled:border-dashed disabled:bg-disabled disabled:text-disabled-text " +
   "read-only:aria-busy:cursor-progress read-only:aria-busy:bg-bg read-only:aria-busy:text-muted";
 
+/** Auswahlkachel einer Radiogruppe (z. B. Kategorie): eckig, gewählt = Aktionsfarbe, Fokus-Rahmen am Label. */
+export const auswahlKachel =
+  "inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center border border-border bg-raised px-4 text-base font-medium text-ink " +
+  "transition-colors duration-(--duration-fast) ease-standard hover:bg-bg active:translate-y-0.5 " +
+  "has-[:checked]:border-action has-[:checked]:bg-action has-[:checked]:text-on-action " +
+  "has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus " +
+  "data-ungueltig:border-danger";
+
 /** Fehlersatz unter einem Knopf oder Feld, immer mit Warnzeichen davor. */
 export const fehlerSatz = "flex items-start gap-2 text-sm font-medium text-danger";
 
